@@ -1,7 +1,7 @@
 #! /usr/bin/python3
 from socket import *
 from _thread import *
-serverName = "137.207.82.53"
+serverName = ""
 serverPort = 12000
 serverSocket = socket(AF_INET, SOCK_STREAM)
 serverSocket.bind((serverName, serverPort))
