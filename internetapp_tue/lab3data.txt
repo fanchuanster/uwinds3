@@ -1,0 +1,42 @@
+TOPICS                  
+------  
+name               
+1. Web Development      
+2. Management          
+3. IT Certification    
+4. Sports               
+5. Economics            		
+
+
+
+COURSES**
+---------
+title										topic					price			for_everyone
+1. CCNA		           					    IT Certification		199.99				F
+2. AWS			       			            IT Certification		119.99				T		
+3. CompTIA Security		                    IT Certification		139.99				F
+4. Oracle SQL			                    IT Certification		159.99				F
+
+5. Microeconomics                           Economics				199.99				F
+6. Introduction to Economics	            Economics				174.99				T	
+7. Global Economics		                    Economics				149.99				T	
+
+8. Web Dev Bootcamp			     		   Web Development			199.99				T	
+9. Web Design		                        Web Development			159.99				F	
+10. Web Development Mastercalss		        Web Development			124.99				T
+11. Build Responsive Websites		        Web Development			149.99				F
+
+12. Innovation for Business		            Management				174.99				T
+13. Leadership Skills		                Management				184.99				T
+14. Project Management		                Management				149.99				T
+
+15. Sports Psychology			            Sports     				174.99				T
+16. Introduction to Soccer 	                Sports					134.99				T
+17. Swimming Guide for Beginners            Sports  				99.99				T
+
+
+** If the course is not for everyone, the 'for_everyone' flag for that course should be False.
+
+
+
+
