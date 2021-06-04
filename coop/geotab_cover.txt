@@ -1,0 +1,18 @@
+Hi Recruiter@Geotab,
+
+I am a vegetarian & regular meditator & Ping Pong player, with 15 years working experience in software development industry, with increasing interest in data science & engineering thus on purpose have started my learning journey in the area years ago, list a few relevant courses I have taken:
+1. Practical Machine Learning Tutorial with Python - https://www.youtube.com/watch?v=OGxgnH8y2NM&list=PLQVvvaa0QuDfKTOs3Keq_kaG2P55YRn5v
+2. Google Cloud Fundamentals: Big Data and Machine Learning, May 26 2021
+3. Getting Started with Google Kubernetes Engine, May 27 2021
+4. Google Cloud Hero: Core Infrastructure II, May 18
+5. Linkedin/learning - Big Data in the Age of AI
+6. Linkedin/learning - Learning Hadoop
+7. Linkedin/learning - Introduction to Spark SQL and DataFrames
+8. Linkedin/learning - Building and Deploying Deep Learning Applications with TensorFlow
+9. Linkedin/learning - Learning MongoDB
+10. Linkedin/learning - Learning NoSQL Databases
+11. Linkedin/learning - Artificial Intelligence Foundations: Machine Learning
+12. Linkedin/learning - AWS Essential Training for Architects
+
+I hope to leaverage what I built from experience and  gained from learning to support Geotab's needs towards a greater success.
+Thank you for review, and looking forward to sharing more during an interview.
