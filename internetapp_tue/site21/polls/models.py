@@ -46,7 +46,7 @@ class Order(models.Model):
     def total_cost(self):
         return sum([course.price for course in self.courses.all()])
     def __str__(self):
-        return f"{len(self.courses.all())} course(s) - {self.student} - {self.order_status} - {self.order_date}"
+        return f"${self.total_cost()} - {self.student} - {self.order_status} - {self.order_date}"
     courses = models.ManyToManyField(Course, related_name='courses', blank=True)
     student = models.ForeignKey(Student, related_name='student', on_delete=models.CASCADE)
     order_status = models.BigIntegerField(choices=ORDER_STATUSES, default=1)

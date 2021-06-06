@@ -1,0 +1,74 @@
+import django
+from polls.models import Topic, Course, Student, Order
+for a in Topic.objects.all():
+    print(a)
+    
+Course.objects.name
+Course.objects.count()
+for c in Course.objects.all():
+    print(c)
+    
+for a in Student.objects.all():
+    print(a)
+    
+for a in Student.objects.all():
+    print(a.last_name())
+    
+for a in Student.objects.all():
+    print(a.last_name)
+    
+Student.objects.filter(last_name='Jones')
+Topic.objects.all()
+Topic.objects.filter(length=8)
+Student.objects.all()
+for s in Student.objects.all():
+    print(s.address)
+    
+Student.objects.filter(address='Sunset Avenue')
+Student.objects.filter(address__contains='Sunset Avenue')
+Student.objects.filter(address__contains='Avenue', province='ON')
+Student.objects.filter(interested_in__contains='Sports')
+print(s.interested_in for s in Student.objects.all())
+print([s.interested_in for s in Student.objects.all()])
+print([c.title for c in [s.interested_in for s in Student.objects.all()]])
+print([c.title() for c in [s.interested_in for s in Student.objects.all()]])
+print([c.title() for c in [s.interested_in.all() for s in Student.objects.all()]])
+print([c.title for c in [s.interested_in.all() for s in Student.objects.all()]])
+print([c for c in [s.interested_in.all() for s in Student.objects.all()]])
+print([t.length for t in [s.interested_in.all() for s in Student.objects.all()]])
+print([t.count() for t in [s.interested_in.all() for s in Student.objects.all()]])
+Student.objects.filter(interested_in__name='Sports')
+Course.objects.filter(price>150)
+Course.objects.filter(price__gt=150)
+Student.object.filter(province__ne='ON')
+Student.object.exclude(province='ON')
+Student.objects.exclude(province='ON')
+Order.objects.filter(student__first_name='Chris')
+Course.objects.exclude(for_everyone=True)
+Order.objects.filter(pk=1)
+[o.student.first_name for o in Order.objects.filter(pk=1)]
+Course.objects.filter(price__lt=150, for_everyone=True)
+Order.objects.filter(courses__contains='Web Dev Bootcamp')
+Order.objects.filter(courses__name__contains='Web Dev Bootcamp')
+Course.objects.filter(title='Web Dev Bootcamp')
+Student.objects.filter(courses__contains=Course.objects.filter(title='Web Dev Bootcamp'))
+Order.objects.all()
+Student.objects.filter(courses__contains=Course.objects.get(title='Web Dev Bootcamp'))
+Order.objects.filter(courses__contains=Course.objects.get(title='Web Dev Bootcamp'))
+Order.objects.filter(courses=Course.objects.filter(title='Web Dev Bootcamp'))
+Order.objects.filter(courses=Course.objects.get(title='Web Dev Bootcamp'))
+Course.objects.get(title='Web Dev Bootcamp')
+[o.courses.all() for o in Order.objects.filter(courses=Course.objects.get(title='Web Dev Bootcamp'))]
+[o.student.interested_in for o in Order.objects.filter(courses=Course.objects.get(title='Web Dev Bootcamp'))]
+[o.student.interested_in.all() for o in Order.objects.filter(courses=Course.objects.get(title='Web Dev Bootcamp'))]
+Student.objects.filter(first_name='Chris')
+[s.interested_in for s in Student.objects.filter(first_name='Chris')]
+flatten([s.interested_in for s in Student.objects.filter(first_name='Chris')])
+interested_ins = [s.interested_in for s in Student.objects.filter(first_name='Chris')]
+Course.objects.filter(topic__contained_by=Student.objects.get(first_name='Chris').interested_in)
+Course.objects.filter(topic__name__in=[t.name for t in Student.objects.get(first_name='Chris').interested_in])
+Course.objects.filter(topic__name__in=[t.name for t in Student.objects.get(first_name='Chris').interested_in.all()])
+[t.length for t in Student.objects.get(first_name='Chris').interested_in.all()]
+Student.objects.get(first_name='chris').registered_courses.all()
+Student.objects.get(first_name='Chris').registered_courses.all()
+[str(c) for c in Student.objects.get(first_name='Chris').registered_courses.all()]
