@@ -1,0 +1,25 @@
+Workshop on Deep Learning (Part 2)
+Participatory Assessment
+Q. 1. Write 5 applications of Convolutional Neural Network (CNN).
+1). vision system in self driving car
+2). facial detection/object detection in Facebook tagging
+3). Robot vision of Boston Dynamics' Robot
+4). Camera Beatifying effect 
+5). Artificial sound of assistants like Apple Siri, Micro Soft Cortana
+
+Q. 2. What are the things to consider becoming an expert in Deep Learning (write 3 points)?
+1). Learn basic Macine Learning techniques, supervised learning & unsupervised learning, classification, clustering, regression etc.
+2). pick a project to get hands-on the popular tools and frameworks & libraries.
+3). gain understanding of basic pertinent Mathematic knowledge, like probability and statistics, linear algrbra. Calculus.
+
+Q. 3. Write the name of three strategies to reduce the overfitting.
+1). Regularizations techniques - L1 & L2 regularization
+2). Dropout
+3). Data Augmentation
+4). Early stopping
+
+Q. 4. Why transfer learning is useful?
+Transfer learning is to create a new model by applying new dataset to a related pretrained model, it's useful when new amount of dataset is limited.
+
+Q. 5. Why do we need data augmentation?
+data augmentation can significantly increase the diversity of training data without collecting new data
