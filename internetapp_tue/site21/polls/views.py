@@ -25,9 +25,13 @@ def about(request):
 def detail(reqeust, topic_id):
     response = HttpResponse()
     topic = Topic.objects.get(id=topic_id)
-    courses = Course
-    response.write(topic.name.upper() + ", in all " + len())
-    pass
+    courses = Course.objects.filter(topic__id=topic_id)
+    response.write(topic.name.upper() + ", in all {}".format(len(courses)) + " courses")
+    response.write("<div>")
+    for course in courses:
+        response.write("<p>" + str(course.title) + "</p>")
+    response.write("</div>")
+    return response
 
 def student_details(request, student_id):
     try:
