@@ -1,13 +1,33 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import Http404
-from .models import Student
+from .models import Student, Topic, Order, Course
 
-def home(request):
-    students = Student.objects.all()
-    return render(request, 'home.html', {
-        'students': students
-    })
+def index(request):
+    topics = Topic.objects.all().order_by('id')[:10]
+    response = HttpResponse()
+    heading = '<p>' + 'List of topics:' + '</p>'
+    response.write(heading)
+    for topic in topics:
+        topic_str = '<p>' + str(topic.id) + ': ' + str(topic) + '<p>'
+        response.write(topic_str)
+    courses = Course.objects.all().order_by('-title')[:5]
+    heading = '<p>' + 'List of courses:' + '</p>'
+    response.write(heading)
+    for course in courses:
+        course_str = '<p>' + str(course.title) + ': ' + str(course.price) + '<p>'
+        response.write(course_str)
+    return response
+
+def about(request):
+    return HttpResponse('This is an E-learning Website! Search our Topics to find all available Courses.')
+
+def detail(reqeust, topic_id):
+    response = HttpResponse()
+    topic = Topic.objects.get(id=topic_id)
+    courses = Course
+    response.write(topic.name.upper() + ", in all " + len())
+    pass
 
 def student_details(request, student_id):
     try:

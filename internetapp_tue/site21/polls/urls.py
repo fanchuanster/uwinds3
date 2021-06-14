@@ -18,8 +18,10 @@ from django.urls import path
 from polls import views
 
 urlpatterns = [
-    # path('admin/', admin.site.urls),
-    # path(r'', views.index, name='index'),
+    path('admin/', admin.site.urls),
+    path(r'', views.index, name='index'),
     # the path should not prefixed with /
     # path('student/<int:student_id>/', views.student_details, name='student_details')
+    path('about/', views.about, name='about'),
+    path('detail/<int:topic_id>/', views.detail, name='detail')
 ]
