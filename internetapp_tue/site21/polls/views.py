@@ -1,7 +1,8 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import Http404
-from .models import Student, Topic, Order, Course
+from .models import Student, Topic, Course
+from django.shortcuts import get_object_or_404
 
 def index(request):
     topics = Topic.objects.all().order_by('id')[:10]
@@ -24,7 +25,7 @@ def about(request):
 
 def detail(reqeust, topic_id):
     response = HttpResponse()
-    topic = Topic.objects.get(id=topic_id)
+    topic = get_object_or_404(Topic, id=topic_id)
     courses = Course.objects.filter(topic__id=topic_id)
     response.write(topic.name.upper() + ", in all {}".format(len(courses)) + " courses")
     response.write("<div>")
