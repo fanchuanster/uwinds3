@@ -1,0 +1,8 @@
+<div>
+    {% for student in students %}
+    <li>
+        <a href="{%  url 'student_details' student.id %}"/>
+        {{ student.username}}
+    </li>
+    {% endfor %}
+</div>
