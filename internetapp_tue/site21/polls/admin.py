@@ -7,4 +7,8 @@ from .models import Topic, Course, Student, Order
 admin.site.register(Course)
 admin.site.register(Topic)
 admin.site.register(Student)
-admin.site.register(Order)
+# admin.site.register(Order)
+
+@admin.register(Order)
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ['student', 'order_status', 'order_date']

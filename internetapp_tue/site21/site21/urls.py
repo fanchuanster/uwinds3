@@ -15,7 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from polls import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', views.home, name='home'),
+    # the path should not prefixed with /
+    path('student/<int:student_id>/', views.student_details, name='student_details')
 ]

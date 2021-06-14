@@ -37,3 +37,4 @@ Exercise Files/
 
 *.zip
 *.pyc
+/migrations/*
