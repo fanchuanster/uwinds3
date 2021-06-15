@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from collections import defaultdict
 
 # exact match ratio
 #MR = np.all(y_pred == y_true, axis=1).mean()
@@ -12,17 +13,27 @@ import numpy as np
 #   return temp/(y_true.shape[0] * y_true.shape[1])
 
 df = pd.read_csv("Train.csv")
-df.count
-x_df = df.iloc[:, :-2]
-x_df.columns
+x_df = df.iloc[:, :-2].astype(np.float)
+y_df = df.iloc[:, -2:].astype(np.int64)
 
-for column in x_df:
-    col = df[column]
-    print(column, col.min(), col.mean(), col.max())
-    break
+cordf = x_df.corr().abs()
+cordf = cordf.replace(1.0, 0.0)
 
-print(type(x_df[['F12', 'F13']]))
+threshhold = 0.94
+todrop = defaultdict(list)
+for column in cordf:
+    s = cordf[column]
+    if any(s > threshhold):
+        for i, v in s.items():
+            if v > threshhold:
+                if i not in todrop:
+                    todrop[column].append((i, v))
+todroplist = list(set([item[0] for k,v in todrop.items() for item in v]))
 
-x_df[['F12', 'F13']].corr()
+x_df = x_df.drop(todroplist, axis=1)
 
+y_df['Label'] = y_df.apply(lambda r: r['Label1'] * (-1 if r['Label2'] == 0 else 1), axis=1)
 
+for column in y_df:
+    col = y_df[column]
+    print(column, pd.unique(col), col.min(), col.mean(), col.max())
