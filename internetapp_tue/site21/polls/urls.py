@@ -23,5 +23,5 @@ urlpatterns = [
     # the path should not prefixed with /
     # path('student/<int:student_id>/', views.student_details, name='student_details')
     path('about/', views.about, name='about'),
-    path('detail/<int:topic_id>/', views.detail, name='detail')
+    path('<int:topic_id>/', views.detail, name='detail')
 ]

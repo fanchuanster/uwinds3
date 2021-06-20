@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>Topic detail</head>
+<body>
+<div>
+    <br>
+    <label>Name: {{ name }}</label>
+    <br>
+    <label>Length: {{ length }}</label>
+</div>
+<div>
+    {% for course in courses %}
+    <li>
+        {{ course.title | capfirst }}
+    </li>
+    {% endfor %}
+
+</div>
+<p><a href="{% url 'index' %}">back to main</a></p>
+</body>
+</html>
