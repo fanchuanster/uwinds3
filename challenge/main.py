@@ -39,7 +39,7 @@ def remove_sparses(df, threshold = 0.89):
         col = df[column]
         highest = col.value_counts().iat[0]
         if highest / len(df.index) > threshold:
-            print(column, col.value_counts().index[0], col.value_counts().iat[0], highest / len(x_df.index))
+            print(column, col.value_counts().index[0], col.value_counts().iat[0], highest / len(df.index))
             sparse_columns.append(column)
     df.drop(sparse_columns, axis=1, inplace=True)
     return df
@@ -108,13 +108,9 @@ model.compile(optimizer='adam',
               metrics=['sparse_categorical_accuracy'])
 model.summary()
 
-
-for i in [X_train, X_test, y_train, y_test]:
-    print(type(i))
-
 #Training the model 
 training = model.fit(X_train, y_train, epochs = 20, batch_size = 5000, validation_data = (X_test, y_test))
-        
+visualize(training)
 
 if __name__ == '__main__':
     main()
