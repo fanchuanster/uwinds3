@@ -84,6 +84,9 @@ for column in df:
         print(column, type(col.value_counts()), '\t{}\n'.format(len(col.value_counts())), col.value_counts())
         df.drop([column], axis=1, inplace=True)
 print(df.shape)
+
+#further use selectkbest herer..
+# https://machinelearningmastery.com/chi-squared-test-for-machine-learning/
         
 
 df_7 = df[df['Label1'] == 7]
