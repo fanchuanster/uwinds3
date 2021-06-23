@@ -1,11 +1,14 @@
 import pandas as pd
 import numpy as np
 from collections import defaultdict
-from sklearn import preprocessing
+from sklearn import preprocessing, decomposition
+from sklearn.feature_selection import SelectKBest, f_classif
 from sklearn.model_selection import train_test_split
 import tensorflow.keras as tfk
 import tensorflow.keras.backend as kb
 import matplotlib.pyplot as plt
+
+from sklearn.datasets import make_classification
 
 # exact match ratio
 #MR = np.all(y_pred == y_true, axis=1).mean()
@@ -27,7 +30,6 @@ def remove_correlations(df, threshold = 0.94):
             v = cordf.iat[i, j]
             if v > threshold and i != j and j not in todrop:
                 todrop[i].append((j, v))
-    print(todrop)
     todroplist = list(set([item[0] for k,v in todrop.items() for item in v]))
     print(len(todroplist), todroplist)
     df.drop(df.columns[todroplist], axis=1, inplace=True)
@@ -65,10 +67,24 @@ def visualize(training):
     axes[1].legend()
     plt.tight_layout()
     plt.show()
+    
+def select_features(x,y):
+    fs = SelectKBest(score_func=f_classif, k=10)
+    X_selected = fs.fit_transform(X, y)
+    print(X_selected.shape)
 
 df = pd.read_csv("Train.csv")
 df = remove_correlations(df)
 df = remove_sparses(df)
+
+# remove linear features
+for column in df:
+    col = df[column]
+    if len(pd.unique(col)) > 100:
+        print(column, type(col.value_counts()), '\t{}\n'.format(len(col.value_counts())), col.value_counts())
+        df.drop([column], axis=1, inplace=True)
+print(df.shape)
+        
 
 df_7 = df[df['Label1'] == 7]
 
@@ -77,40 +93,56 @@ y_df = df.iloc[:, -2:].astype('int32')
 print(x_df.shape)
 sc = preprocessing.StandardScaler()
 x = sc.fit_transform(x_df)
-print(x.shape)
 y_df['Label'] = y_df.apply(lambda r: r['Label1'] * (-1 if r['Label2'] == 0 else 1), axis=1).astype(np.int64)
 y_df = y_df[['Label1']]
+
 for column in y_df:
     col = y_df[column]
     print(column, '\n', col.value_counts())
     
-
 X_train, X_test, y_train, y_test = train_test_split(x, y_df-1, test_size=0.2, random_state=0)
 print(X_train.shape)
 print(y_train.shape)
+print(X_test.shape)
+print(y_test.shape)
 
-for column in x_df:
-    col = x_df[column]
-    if len(pd.unique(col)) < 1000:
-        print(column, type(col.value_counts()), '\n', col.value_counts())
-        
+# fs = SelectKBest(score_func=f_classif, k=10)
+# X_train_selected = fs.fit_transform(X_train, np.ravel(y_train))
+# print(X_selected.shape)
+# x_test_selected = fs.transform(X_test)
+# print(x_test_selected.shape)
+# print(y_train.shape)
+
+# pca_components = 12
+# pca = decomposition.PCA(pca_components, svd_solver='full')
+# x_train_pca = pca.fit_transform(X_train)
+# x_test_pca = pca.transform(X_test)
+# pca_components = len(x_train_pca[0])
+# print(x_train_pca[0])
+# print(x_test_pca[0])
+# print(pca.explained_variance_ratio_)
+# print(pca_transform.shape)
+# print(pca_components)
+# # print(pca.n_features_)
+
 tryfeature = ['F2', 'F3', 'F4', 'F5', 'F6', 'F10', 'F11', 'F20', 'F32', 'F33', 'F35', 'F40']
-# create model
+
 model = tfk.Sequential()
-model.add(tfk.layers.Dense(50,input_shape=(26,), activation='relu')) #First Hidden Layer
+model.add(tfk.layers.Dense(50,input_shape=(X_train.shape[1],), activation='relu')) #First Hidden Layer
 model.add(tfk.layers.Dense(100, activation='relu')) #Second  Hidden Layer
+model.add(tfk.layers.Dense(50, activation='relu')) #Second  Hidden Layer
 model.add(tfk.layers.Dense(10, activation='softmax')) #Output Layer
 #model Looks like:  784 input -> [50 units in layer1] ->[100 units in layer2] -> 1 output
 
-# Compiling the model  
 model.compile(optimizer='adam',                         
               loss='sparse_categorical_crossentropy',
               metrics=['sparse_categorical_accuracy'])
 model.summary()
 
 #Training the model 
-training = model.fit(X_train, y_train, epochs = 20, batch_size = 5000, validation_data = (X_test, y_test))
+training = model.fit(X_train, y_train, epochs = 30, batch_size = 5000, validation_data = (X_test, y_test))
 visualize(training)
+
 
 if __name__ == '__main__':
     main()
