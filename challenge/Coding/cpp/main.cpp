@@ -37,7 +37,7 @@ int main()
 {
     cout<<"hello world"<<endl;
 
-    BaseClass b = {2};
+    BaseClass b = BaseClass(2);
     b.expr();
 
     funclass(b);
