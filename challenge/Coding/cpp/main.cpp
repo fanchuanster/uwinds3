@@ -25,18 +25,31 @@ class BaseClass
 {
   public:
     BaseClass(int i, const string& s):i(i), s(s)
-    {}
+    {
+        cout<<"BaseClass("<<i<<", "<<s<<")"<<endl;
+    }
     explicit BaseClass(int i):BaseClass(i,"dummy")
     {
+        cout<<"BaseClass("<<i<<")"<<endl;
     }
     void expr() const
     {
         cout<<"i="<<i<<", s="<<s<<endl;
     }
-  private:
+  protected:
     int i=1;
     string s = "ss";
 };
+class DerivedClass : public BaseClass
+{
+  public:
+    DerivedClass(int i, const string& s)
+    {
+        this.i = i;
+        this.s = s;
+    }
+
+}
 
 void funclass(BaseClass b)
 {
@@ -47,6 +60,8 @@ void funclass(BaseClass b)
 int main()
 {
     cout<<"hello world"<<endl;
+
+    DerivedClass d = {0, 'dddt'};
 
     BaseClass b = {2, "ttt"};
     b.expr();
