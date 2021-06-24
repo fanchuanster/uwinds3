@@ -10,6 +10,13 @@ void myfunction(int i)
     cout<<i<<endl;
 }
 
+class BaseClass;
+void funclass(BaseClass& b)
+{
+    cout<<"funclass:"<<endl;
+    b.expr();
+}
+
 class BaseClass
 {
   public:
@@ -33,6 +40,8 @@ int main()
 
     BaseClass b = {2};
     b.expr();
+
+    funclass(9);
 
 
     vector<int> v = {1,3,4,5,5,4};
