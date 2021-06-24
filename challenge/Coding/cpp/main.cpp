@@ -27,7 +27,7 @@ class BaseClass
     string s = "ss";
 };
 
-void funclass(BaseClass& b)
+void funclass(BaseClass b)
 {
     cout<<"funclass:"<<endl;
     b.expr();
