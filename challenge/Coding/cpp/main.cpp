@@ -25,4 +25,14 @@ int main()
     string s = "s1";
     string s2("s2");
     cout<<s<<",s2"<<endl;
+
+    int [] ints = {1,2,3,4};
+    for (auto& i:ints)
+    {
+        i *= 2;
+    }
+    for (auto& i:ints)
+    {
+        cout<<i<<endl;
+    }
 }
