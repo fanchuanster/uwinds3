@@ -37,7 +37,7 @@ int main()
 {
     cout<<"hello world"<<endl;
 
-    BaseClass b = BaseClass(2);
+    BaseClass b = {2, "ttt"};
     b.expr();
 
     funclass(b);
