@@ -10,9 +10,27 @@ void myfunction(int i)
     cout<<i<<endl;
 }
 
+class BaseClass
+{
+  public:
+    BaseClass(int i, const string& s):i(i), s(s)
+    {}
+    void expr()
+    {
+        cout<<"i="<<i<<", s="<<s<<endl;
+    }
+  private:
+    int i=1;
+    string s = "ss";
+}
+
 int main()
 {
     cout<<"hello world"<<endl;
+
+    BaseClass b = {2,"ssssss"};
+    b.expr();
+
 
     vector<int> v = {1,3,4,5,5,4};
     for_each(v.begin(), v.end(), myfunction);
