@@ -15,6 +15,9 @@ class BaseClass
   public:
     BaseClass(int i, const string& s):i(i), s(s)
     {}
+    BaseClass(int i):BaseClass(i,"dummy")
+    {
+    }
     void expr()
     {
         cout<<"i="<<i<<", s="<<s<<endl;
@@ -28,7 +31,7 @@ int main()
 {
     cout<<"hello world"<<endl;
 
-    BaseClass b = {2,"ssssss"};
+    BaseClass b = {2};
     b.expr();
 
 
