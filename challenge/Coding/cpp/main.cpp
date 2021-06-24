@@ -15,7 +15,7 @@ class BaseClass
   public:
     BaseClass(int i, const string& s):i(i), s(s)
     {}
-    explict BaseClass(int i):BaseClass(i,"dummy")
+    explicit BaseClass(int i):BaseClass(i,"dummy")
     {
     }
     void expr() const
