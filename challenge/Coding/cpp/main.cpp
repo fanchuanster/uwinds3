@@ -25,7 +25,7 @@ class BaseClass
     BaseClass(int i):BaseClass(i,"dummy")
     {
     }
-    void expr()
+    void expr() const
     {
         cout<<"i="<<i<<", s="<<s<<endl;
     }
