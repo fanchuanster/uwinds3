@@ -5,6 +5,17 @@
 
 using namespace std;
 
+/**
+ * 1. uniform initialization with brackets.
+ * 2. constructor improvement - delegation to other destructors.
+ * 3. class member in-place initialization
+ * 4. explicit keyword, prevent implicit converting
+ * 5. range iteration with for (auto& i:vec)
+ * 6. auto type inference
+ * 7. for_each(first_iter, last_iter, func or Fun operator or lambda)
+ * 8. lambda
+ */
+
 void myfunction(int i)
 {
     cout<<i<<endl;
@@ -45,7 +56,11 @@ int main()
 
 
     vector<int> v = {1,3,4,5,5,4};
-    for_each(v.begin(), v.end(), myfunction);
+    for_each(v.begin(), v.end(), [&b](int i)->int {
+        b.expr();
+        cout<<i*10<<endl;
+        return i*10;
+        });
 
     for (auto& i:v)
     {
