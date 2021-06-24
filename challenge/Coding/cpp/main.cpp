@@ -11,7 +11,7 @@ void myfunction(int i)
 }
 
 class BaseClass;
-void funclass(BaseClass& b)
+void funclass(const BaseClass& b)
 {
     cout<<"funclass:"<<endl;
     b.expr();
@@ -41,6 +41,7 @@ int main()
     BaseClass b = {2};
     b.expr();
 
+    funclass(b);
     funclass(9);
 
 
