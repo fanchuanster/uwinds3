@@ -26,7 +26,7 @@ int main()
     string s2("s2");
     cout<<s<<",s2"<<endl;
 
-    int [] ints = {1,2,3,4};
+    int ints[] = {1,2,3,4};
     for (auto& i:ints)
     {
         i *= 2;
