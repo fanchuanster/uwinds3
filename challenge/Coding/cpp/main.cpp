@@ -10,13 +10,6 @@ void myfunction(int i)
     cout<<i<<endl;
 }
 
-class BaseClass;
-void funclass(const BaseClass& b)
-{
-    cout<<"funclass:"<<endl;
-    b.expr();
-}
-
 class BaseClass
 {
   public:
@@ -33,6 +26,12 @@ class BaseClass
     int i=1;
     string s = "ss";
 };
+
+void funclass(const BaseClass& b)
+{
+    cout<<"funclass:"<<endl;
+    b.expr();
+}
 
 int main()
 {
