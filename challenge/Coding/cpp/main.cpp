@@ -22,7 +22,7 @@ class BaseClass
   private:
     int i=1;
     string s = "ss";
-}
+};
 
 int main()
 {
