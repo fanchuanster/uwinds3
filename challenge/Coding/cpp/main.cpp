@@ -41,7 +41,7 @@ int main()
     b.expr();
 
     funclass(b);
-    funclass(9);
+    funclass(BaseClass(9));
 
 
     vector<int> v = {1,3,4,5,5,4};
