@@ -14,6 +14,7 @@ using namespace std;
  * 6. auto type inference
  * 7. for_each(first_iter, last_iter, func or Fun operator or lambda)
  * 8. lambda
+ * 9. move constructor - return a temp class from a method.
  */
 
 
