@@ -51,7 +51,8 @@ class BaseClass
 class DerivedClass : public BaseClass
 {
   public:
-    DerivedClass(int i, const string& s)
+    DerivedClass(int i, const string& s):
+    BaseClass(i)
     {
         this->i = i;
         this->s = s;
