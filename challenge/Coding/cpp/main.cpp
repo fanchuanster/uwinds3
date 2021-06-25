@@ -32,9 +32,9 @@ class BaseClass
     }
     BaseClass(BaseClass&& b)
     {
-        cout<<"BaseClass Move"<<endl;
         i = b.i;
         s = b.s;
+        cout<<"BaseClass Move("<<i<<", "<<s<<")"<<endl;
     }
     ~BaseClass()
     {
