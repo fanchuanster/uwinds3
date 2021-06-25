@@ -65,7 +65,7 @@ BaseClass getClass()
     return b;
 }
 
-void funclass(BaseClass& b)
+void funclass(const BaseClass& b)
 {
     cout<<"funclass:"<<endl;
     b.expr();
