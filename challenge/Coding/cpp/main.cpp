@@ -33,8 +33,8 @@ class BaseClass
     BaseClass(BaseClass&& b)
     {
         cout<<"BaseClass Move"<<endl;
-        this.i = b.i;
-        this.s = b.s;
+        i = b.i;
+        s = b.s;
     }
     explicit BaseClass(int i):BaseClass(i,"dummy")
     {
@@ -53,8 +53,8 @@ class DerivedClass : public BaseClass
   public:
     DerivedClass(int i, const string& s)
     {
-        this.i = i;
-        this.s = s;
+        this->i = i;
+        this->s = s;
     }
 
 }
