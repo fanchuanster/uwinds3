@@ -36,6 +36,11 @@ class BaseClass
         i = b.i;
         s = b.s;
     }
+    ~BaseClass()
+    {
+        cout<<"~BaseClass("<<i<<", "<<s<<")"<<endl;
+    }
+
     explicit BaseClass(int i):BaseClass(i,"dummy")
     {
         cout<<"BaseClass("<<i<<")"<<endl;
@@ -87,29 +92,29 @@ int main()
     funclass(BaseClass(9));
 
 
-    vector<int> v = {1,3,4,5,5,4};
-    for_each(v.begin(), v.end(), [&b](int i)->int {
-        b.expr();
-        cout<<i*10<<endl;
-        return i*10;
-        });
+    // vector<int> v = {1,3,4,5,5,4};
+    // for_each(v.begin(), v.end(), [&b](int i)->int {
+    //     b.expr();
+    //     cout<<i*10<<endl;
+    //     return i*10;
+    //     });
 
-    for (auto& i:v)
-    {
-        cout<<"for "<<i<<endl;
-    }
+    // for (auto& i:v)
+    // {
+    //     cout<<"for "<<i<<endl;
+    // }
 
-    string s = "s1";
-    string s2("s2");
-    cout<<s<<",s2"<<endl;
+    // string s = "s1";
+    // string s2("s2");
+    // cout<<s<<",s2"<<endl;
 
-    int ints[] = {1,2,3,4};
-    for (auto& i:ints)
-    {
-        i *= 2;
-    }
-    for (auto& i:ints)
-    {
-        cout<<i<<endl;
-    }
+    // int ints[] = {1,2,3,4};
+    // for (auto& i:ints)
+    // {
+    //     i *= 2;
+    // }
+    // for (auto& i:ints)
+    // {
+    //     cout<<i<<endl;
+    // }
 }
