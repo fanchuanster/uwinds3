@@ -56,8 +56,7 @@ class DerivedClass : public BaseClass
         this->i = i;
         this->s = s;
     }
-
-}
+};
 
 BaseClass getClass()
 {
