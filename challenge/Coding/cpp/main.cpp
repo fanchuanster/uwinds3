@@ -47,7 +47,7 @@ class BaseClass
     }
     void expr() const
     {
-        cout<<"i="<<i<<", s="<<s<<endl;
+        cout<<"expr i="<<i<<", s="<<s<<endl;
     }
     void incr()
     {
