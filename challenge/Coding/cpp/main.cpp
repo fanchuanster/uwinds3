@@ -49,6 +49,10 @@ class BaseClass
     {
         cout<<"i="<<i<<", s="<<s<<endl;
     }
+    void incr()
+    {
+        i++;
+    }
   protected:
     int i=1;
     string s = "ss";
@@ -67,6 +71,7 @@ class DerivedClass : public BaseClass
 BaseClass getClass()
 {
     BaseClass b = {1,"1"};
+    b.incr();
     return b;
 }
 
