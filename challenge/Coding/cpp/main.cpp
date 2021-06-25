@@ -75,7 +75,8 @@ int main()
 {
     cout<<"hello world"<<endl;
 
-    auto b = getClass();
+    auto bb = getClass();
+    bb.expr();
 
     DerivedClass d = {0, "dddt"};
 
