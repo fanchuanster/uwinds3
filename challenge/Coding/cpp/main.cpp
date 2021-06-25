@@ -16,6 +16,8 @@ using namespace std;
  * 8. lambda
  */
 
+
+
 void myfunction(int i)
 {
     cout<<i<<endl;
@@ -27,6 +29,11 @@ class BaseClass
     BaseClass(int i, const string& s):i(i), s(s)
     {
         cout<<"BaseClass("<<i<<", "<<s<<")"<<endl;
+    }
+    BaseClass(BaseClass&& b)
+    {
+        this.i = b.i;
+        this.s = b.s;
     }
     explicit BaseClass(int i):BaseClass(i,"dummy")
     {
