@@ -77,7 +77,7 @@ int main()
 
     auto b = getClass();
 
-    DerivedClass d = {0, 'dddt'};
+    DerivedClass d = {0, "dddt"};
 
     BaseClass b = {2, "ttt"};
     b.expr();
