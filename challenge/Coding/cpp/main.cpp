@@ -88,13 +88,13 @@ int main()
     auto bb = getClass();
     bb.expr();
 
-    DerivedClass d = {0, "dddt"};
+    // DerivedClass d = {0, "dddt"};
 
-    BaseClass b = {2, "ttt"};
-    b.expr();
+    // BaseClass b = {2, "ttt"};
+    // b.expr();
 
-    funclass(b);
-    funclass(BaseClass(9));
+    // funclass(b);
+    // funclass(BaseClass(9));
 
 
     // vector<int> v = {1,3,4,5,5,4};
