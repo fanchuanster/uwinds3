@@ -32,6 +32,7 @@ class BaseClass
     }
     BaseClass(BaseClass&& b)
     {
+        cout<<"BaseClass Move"<<endl;
         this.i = b.i;
         this.s = b.s;
     }
@@ -58,6 +59,12 @@ class DerivedClass : public BaseClass
 
 }
 
+BaseClass getClass()
+{
+    BaseClass b = {1,"1"};
+    return b;
+}
+
 void funclass(BaseClass b)
 {
     cout<<"funclass:"<<endl;
@@ -67,6 +74,8 @@ void funclass(BaseClass b)
 int main()
 {
     cout<<"hello world"<<endl;
+
+    auto b = getClass();
 
     DerivedClass d = {0, 'dddt'};
 
