@@ -128,6 +128,15 @@ print(y_test.shape)
 # print(pca_components)
 # # print(pca.n_features_)
 
+
+# 1. try without reducing
+# 2. apply pca  - dimensions reduction
+# 3. switch from standardization to normalization
+# 4. more layers, more nodes
+
+# 5. try activation different
+# 6. try more epochs
+
 tryfeature = ['F2', 'F3', 'F4', 'F5', 'F6', 'F10', 'F11', 'F20', 'F32', 'F33', 'F35', 'F40']
 
 model = tfk.Sequential()
@@ -143,7 +152,7 @@ model.compile(optimizer='adam',
 model.summary()
 
 #Training the model 
-training = model.fit(X_train, y_train, epochs = 30, batch_size = 5000, validation_data = (X_test, y_test))
+training = model.fit(X_train, y_train, epochs = 130, batch_size = 5000, validation_data = (X_test, y_test))
 visualize(training)
 
 
