@@ -3,10 +3,11 @@ import numpy as np
 from collections import defaultdict
 from sklearn import preprocessing, decomposition
 from sklearn.feature_selection import SelectKBest, f_classif
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, StratifiedShuffleSplit
 import tensorflow.keras as tfk
 import tensorflow.keras.backend as kb
 import matplotlib.pyplot as plt
+from collections import defaultdict
 
 from sklearn.datasets import make_classification
 
@@ -24,6 +25,7 @@ from sklearn.datasets import make_classification
 
 def remove_correlations(df, threshold = 0.94):
     cordf = df.corr().abs()
+    print(cordf)
     todrop = defaultdict(list)
     for i in range(cordf.shape[0]):
         for j in range(cordf.shape[1]):
@@ -33,6 +35,7 @@ def remove_correlations(df, threshold = 0.94):
     todroplist = list(set([item[0] for k,v in todrop.items() for item in v]))
     print(len(todroplist), todroplist)
     df.drop(df.columns[todroplist], axis=1, inplace=True)
+    print("remove_correlations - {} features remaining".format(len(df.columns)))
     return df
 
 def remove_sparses(df, threshold = 0.89):
@@ -44,6 +47,14 @@ def remove_sparses(df, threshold = 0.89):
             print(column, col.value_counts().index[0], col.value_counts().iat[0], highest / len(df.index))
             sparse_columns.append(column)
     df.drop(sparse_columns, axis=1, inplace=True)
+    print("remove_sparses - {} features remaining".format(len(df.columns)))
+    return df
+
+def remove_lowcor_with_label(df, labelname):
+    cor = df.corr().abs()    
+    relevant_cor = cor[(cor[labelname] > 0.1)]
+    df = df[relevant_cor.index]
+    print("remove_lowcor_with_label - {} features remaining".format(len(df.columns)))
     return df
 
 def visualize(training):
@@ -68,7 +79,8 @@ def visualize(training):
     plt.tight_layout()
     plt.show()
     
-def select_features(x,y):
+# https://machinelearningmastery.com/chi-squared-test-for-machine-learning/
+def select_kbest(x,y):
     fs = SelectKBest(score_func=f_classif, k=10)
     X_selected = fs.fit_transform(X, y)
     print(X_selected.shape)
@@ -76,38 +88,35 @@ def select_features(x,y):
 df = pd.read_csv("Train.csv")
 df = remove_correlations(df)
 df = remove_sparses(df)
+df = df.drop(['Label2'], axis=1)
+df = remove_lowcor_with_label(df, 'Label1')
 
 # remove linear features
 for column in df:
     col = df[column]
-    if len(pd.unique(col)) > 100:
+    if len(pd.unique(col)) > 10000:
         print(column, type(col.value_counts()), '\t{}\n'.format(len(col.value_counts())), col.value_counts())
         df.drop([column], axis=1, inplace=True)
 print(df.shape)
-
-#further use selectkbest herer..
-# https://machinelearningmastery.com/chi-squared-test-for-machine-learning/
         
-
-df_7 = df[df['Label1'] == 7]
-
-x_df = df.iloc[:, :-2].astype('float32')
-y_df = df.iloc[:, -2:].astype('int32')
-print(x_df.shape)
+x_df = df.iloc[:, :-1].astype('float32')
+y_df = df.iloc[:, -1:].astype('int32')
 sc = preprocessing.StandardScaler()
 x = sc.fit_transform(x_df)
-y_df['Label'] = y_df.apply(lambda r: r['Label1'] * (-1 if r['Label2'] == 0 else 1), axis=1).astype(np.int64)
-y_df = y_df[['Label1']]
+# x = preprocessing.normalize(x_df, norm='l2', axis=1, copy=True, return_norm=False)
+# y_df['Label'] = y_df.apply(lambda r: r['Label1'] * (-1 if r['Label2'] == 0 else 1), axis=1).astype(np.int64)
+# y_df = y_df[['Label1']]
 
 for column in y_df:
     col = y_df[column]
     print(column, '\n', col.value_counts())
     
-X_train, X_test, y_train, y_test = train_test_split(x, y_df-1, test_size=0.2, random_state=0)
-print(X_train.shape)
-print(y_train.shape)
-print(X_test.shape)
-print(y_test.shape)
+# X_train, X_test, y_train, y_test = train_test_split(x, y_df-1, test_size=0.2, random_state=0)
+
+# print(X_train.shape)
+# print(y_train.shape)
+# print(X_test.shape)
+# print(y_test.shape)
 
 # fs = SelectKBest(score_func=f_classif, k=10)
 # X_train_selected = fs.fit_transform(X_train, np.ravel(y_train))
@@ -137,12 +146,9 @@ print(y_test.shape)
 # 5. try activation different
 # 6. try more epochs
 
-tryfeature = ['F2', 'F3', 'F4', 'F5', 'F6', 'F10', 'F11', 'F20', 'F32', 'F33', 'F35', 'F40']
-
 model = tfk.Sequential()
-model.add(tfk.layers.Dense(50,input_shape=(X_train.shape[1],), activation='relu')) #First Hidden Layer
-model.add(tfk.layers.Dense(100, activation='relu')) #Second  Hidden Layer
-model.add(tfk.layers.Dense(50, activation='relu')) #Second  Hidden Layer
+model.add(tfk.layers.Dense(27,input_shape=(x_df.shape[1],), activation='relu')) #First Hidden Layer
+model.add(tfk.layers.Dense(108, activation='relu')) #Second  Hidden Layer
 model.add(tfk.layers.Dense(10, activation='softmax')) #Output Layer
 #model Looks like:  784 input -> [50 units in layer1] ->[100 units in layer2] -> 1 output
 
@@ -152,9 +158,29 @@ model.compile(optimizer='adam',
 model.summary()
 
 #Training the model 
-training = model.fit(X_train, y_train, epochs = 130, batch_size = 5000, validation_data = (X_test, y_test))
+sss = StratifiedShuffleSplit(n_splits=20, test_size=0.2, random_state=0)
+training = None
+count= 0
+for train_index, test_index in sss.split(x, (y_df-1).to_numpy()):
+    # print("TRAIN:", train_index, "TEST:", test_index)
+    X_train, X_test = x[train_index], x[test_index]
+    y_train, y_test = y[train_index], y[test_index]
+    result = model.fit(X_train, y_train, batch_size = 1280, validation_data = (X_test, y_test))
+    if not training:
+        training = result
+    else:
+        training.history['sparse_categorical_accuracy'].extend(result.history['sparse_categorical_accuracy'])
+        training.history['val_sparse_categorical_accuracy'].extend(result.history['val_sparse_categorical_accuracy'])
+        training.history['loss'].extend(result.history['loss'])
+        training.history['val_loss'].extend(result.history['val_loss'])
+    count += 1
+    print("iteration", count)
+
 visualize(training)
 
+print(X_train.shape)
+print(y_train.shape)
+print((y_df-1).to_numpy())
 
 if __name__ == '__main__':
     main()

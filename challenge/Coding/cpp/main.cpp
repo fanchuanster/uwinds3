@@ -18,12 +18,12 @@ using namespace std;
  * 11. nullptr
  */
 
-
-
 void myfunction(int i)
 {
     cout<<i<<endl;
 }
+
+template<
 
 void myfunction(char* pstr)
 {
