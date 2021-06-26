@@ -24,6 +24,18 @@ void myfunction(int i)
     cout<<i<<endl;
 }
 
+void myfunction(char* pstr)
+{
+    if (pstr)
+    {
+        cout<<pstr<<endl;
+    }
+    else
+    {
+        cout<<"null string"<<endl;
+    }
+}
+
 class BaseClass
 {
   public:
@@ -86,8 +98,12 @@ int main()
 {
     cout<<"hello world"<<endl;
 
-    const auto& bb = getClass();
-    bb.expr();
+    myfunction(9);
+    myfunction(0);
+    myfunction(nullptr);
+
+    // const auto& bb = getClass();
+    // bb.expr();
 
     // DerivedClass d = {0, "dddt"};
 
