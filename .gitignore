@@ -38,4 +38,5 @@ Exercise Files/
 *.zip
 *.pyc
 /migrations/*
-*/Dataset/*
+Dataset/*/
+untitled_project/
