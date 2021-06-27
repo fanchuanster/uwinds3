@@ -18,7 +18,6 @@ from sklearn.datasets import make_classification
 # def exact_match_ratio_loss(y_actual, y_pred):
 #     return y_atual != y_pred
 
-
 def hamming_loss(y_true, y_pred):
     special_class = 6
     temp=0
@@ -119,10 +118,11 @@ def analyze_labels(y_df):
     df_statistics(y_df)
     
 def quantile(X_train):
-    # NON-LINEAR TRANSFORMATION (Column-wise) & STANDARDIZATION (Column-wise): 'QuantileTransformer()' transforms features (columns) containing 'skewed/congested' or 'highly-spread' data into a standard normal/probability distribution
-    quantile_trans_standzatn = preprocessing.QuantileTransformer(output_distribution='uniform', random_state=42)
-    standized_X_train = quantile_trans_standzatn.fit_transform(X_train)
-    return standized_X_train
+    # NON-LINEAR Column-wise,  STANDARDIZATION in Column-wise
+    # 'skewed/congested' or 'highly-spread' data to standard normal
+    quantile_trans = preprocessing.QuantileTransformer(output_distribution='uniform', random_state=48)
+    X_train_2 = quantile_trans.fit_transform(X_train)
+    return X_train_2
 
 df = pd.read_csv("Train.csv")
 df = df.drop(['Label2'], axis=1)
@@ -185,25 +185,6 @@ tuner.search(X_train, y_train, epochs=20, validation_data=(X_test, y_test),
 best_model = tuner.get_best_models()[0]
 best_model.summary()
 
-# fs = SelectKBest(score_func=f_classif, k=10)
-# X_train_selected = fs.fit_transform(X_train, np.ravel(y_train))
-# print(X_selected.shape)
-# x_test_selected = fs.transform(X_test)
-# print(x_test_selected.shape)
-# print(y_train.shape)
-
-# pca_components = 12
-# pca = decomposition.PCA(pca_components, svd_solver='full')
-# x_train_pca = pca.fit_transform(X_train)
-# x_test_pca = pca.transform(X_test)
-# pca_components = len(x_train_pca[0])
-# print(x_train_pca[0])
-# print(x_test_pca[0])
-# print(pca.explained_variance_ratio_)
-# print(pca_transform.shape)
-# print(pca_components)
-# # print(pca.n_features_)
-
 
 # 1. try without reducing - 0.8072, 0.8094, 0.8058
 # 2. remove correlations - 0.7999, 0.8005, 0.7995
@@ -223,9 +204,6 @@ best_model.summary()
 
 # 5. try activation different
 # 6. try more epochs
-
-
-
 
 
 # visualize(training)
