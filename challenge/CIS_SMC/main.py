@@ -4,6 +4,7 @@ from collections import defaultdict
 from sklearn import preprocessing, decomposition
 from sklearn.feature_selection import SelectKBest, f_classif
 from sklearn.model_selection import train_test_split, StratifiedShuffleSplit
+import tensorflow as tf
 import tensorflow.keras as tfk
 import tensorflow.keras.backend as kb
 import matplotlib.pyplot as plt
@@ -13,94 +14,13 @@ from kerastuner.engine.hyperparameters import HyperParameters
 
 from sklearn.datasets import make_classification
 
+from util import *
+
 # exact match ratio
 #MR = np.all(y_pred == y_true, axis=1).mean()
 # def exact_match_ratio_loss(y_actual, y_pred):
 #     return y_atual != y_pred
 
-def hamming_loss(y_true, y_pred):
-    special_class = 6
-    temp=0
-    assert(y_true.shape[1] == 1)
-    for i in range(y_true.shape[0]):
-        if y_true[i][0] == y_pred[i][0]:
-            temp += 2
-        elif y_true[i][0] == special_class and y_pred[i][0] != special_class:
-            temp += 0
-        else:
-            temp += 1
-    return temp/(y_true.shape[0] * 2)
-
-def remove_correlations(df, threshold = 0.94):
-    cordf = df.corr().abs()
-    todrop = defaultdict(list)
-    for i in range(cordf.shape[0]):
-        for j in range(cordf.shape[1]):
-            v = cordf.iat[i, j]
-            if v > threshold and i != j and j not in todrop:
-                todrop[i].append((j, v))
-    todroplist = list(set([item[0] for k,v in todrop.items() for item in v]))
-    df.drop(df.columns[todroplist], axis=1, inplace=True)
-    print("remove_correlations - {} features remaining".format(len(df.columns)))
-    return df
-
-def remove_sparses(df, threshold = 0.89, col_number=1):
-    sparse_columns = []
-    for column in df:
-        col = df[column]
-        highest = 0
-        for i in range(0,col_number):
-            highest += col.value_counts().iat[i]
-        if highest / len(df.index) > threshold:
-            print(column, col.value_counts().index[0], col.value_counts().iat[0], highest / len(df.index))
-            sparse_columns.append(column)
-    df.drop(sparse_columns, axis=1, inplace=True)
-    print("remove_sparses - {} features remaining".format(len(df.columns)))
-    return df
-
-def remove_lowcor_with_label(df, labelname):
-    cor = df.corr().abs()    
-    relevant_cor = cor[(cor[labelname] > 0.1)]
-    df = df[relevant_cor.index]
-    print("remove_lowcor_with_label - {} features remaining".format(len(df.columns)))
-    return df
-
-def remove_linears(df, reverse=False):
-    # remove linear features
-    for column in df:
-        if 'Label' in column:
-            continue
-        col = df[column]
-        if not reverse:
-            if len(pd.unique(col)) > 1000:
-                df.drop([column], axis=1, inplace=True)
-        else:
-            if len(pd.unique(col)) < 1000:
-                df.drop([column], axis=1, inplace=True)
-    print("remove_linears - {} features remaining".format(len(df.columns)))
-    return df
-
-def visualize(training):
-    #Visulaizing the Training and Validation Sets Loss and Accuracy
-    fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(8,4))
-    #Plot training and validation accuracy values
-    #axes[0].set_ylim(0,1) #if we want to limit axis in certain range
-    axes[0].plot(training.history['sparse_categorical_accuracy'], label='Train')
-    axes[0].plot(training.history['val_sparse_categorical_accuracy'], label='Validation')
-    axes[0].set_title('Model Accuracy')
-    axes[0].set_xlabel('Epoch')
-    axes[0].set_ylabel('Accuracy')
-    axes[0].legend()
-    #Plot training and validation loss values
-    #axes[1].set_ylim(0,1)
-    axes[1].plot(training.history['loss'], label='Train')
-    axes[1].plot(training.history['val_loss'], label='Validation')
-    axes[1].set_title('Model Loss')
-    axes[1].set_xlabel('Epoch')
-    axes[1].set_ylabel('Loss')
-    axes[1].legend()
-    plt.tight_layout()
-    plt.show()
     
 # https://machinelearningmastery.com/chi-squared-test-for-machine-learning/
 def select_kbest(x,y, k=17):
@@ -126,57 +46,78 @@ def quantile(X_train):
 
 df = pd.read_csv("Train.csv")
 df = df.drop(['Label2'], axis=1)
-# df = remove_correlations(df)
+df = remove_correlations(df)
 # df = remove_sparses(df, col_number=2)
 
-df = remove_lowcor_with_label(df, 'Label1')
+# df = remove_lowcor_with_label(df, 'Label1')
 # df = remove_linears(df, reverse=True)
 # df = df.drop(['F10', 'F12', 'F13', 'F20', 'F27'], axis=1)
         
 x_df = df.iloc[:, :-1].astype('float32')
 y_df = df.iloc[:, -1:].astype('int32')
 
-t = select_kbest(x_df, np.ravel(y_df))
+# t = select_kbest(x_df, np.ravel(y_df))
 
-# sc = preprocessing.StandardScaler()
-# x = sc.fit_transform(t)
+sc = preprocessing.StandardScaler()
+x = sc.fit_transform(x_df)
 x = quantile(x)
 
-normaliztn = preprocessing.Normalizer(norm='l2')
-x = normaliztn.fit_transform(x)
+# normaliztn = preprocessing.Normalizer(norm='l2')
+# x = normaliztn.fit_transform(x)
 
 # df_statistics(x_df)
 # x = preprocessing.normalize(x_df, norm='l2', axis=1, copy=True, return_norm=False)
 
 X_train, X_test, y_train, y_test = train_test_split(x, y_df-1, test_size=0.2, random_state=0)
 
+def hamming_loss(y_true, y_pred):
+    print("hamming_loss", y_true.shape, y_true)
+    print("hamming_loss", y_pred.shape, y_pred)
+    # kb.print_tensor(y_true)
+    # loss = tfk.losses.sparse_categorical_crossentropy(y_true, y_pred)
+    
+    scce = tfk.losses.SparseCategoricalCrossentropy(from_logits=True)
+    # print(scce(y_true, y_pred).numpy())
+    return scce(y_true, y_pred)
+    # special_class = 6
+    # temp=0
+    # print("hamming_loss", y_true.shape, y_true)
+    # print("hamming_loss", y_pred.shape, y_pred)
+    # for i in range(len(y_true)):
+    #     if y_true[i] == y_pred[i]:
+    #         temp += 2
+    #     elif y_true[i] == special_class and y_pred[i] != special_class:
+    #         temp += 0
+    #     else:
+    #         temp += 1
+    # return temp/(len(y_true) * 2)
 
 def tuner_build_model(hp):
     model = tfk.Sequential()
     model.add(tfk.layers.Dense(
-        hp.Choice("input_units", values=[x.shape[1]+1, x.shape[1]*2 + 1]), 
-        input_shape=(x.shape[1],), 
+        X_train.shape[1]+1,
+        input_shape=(X_train.shape[1],), 
         activation='relu')
-        ) #First Hidden Layer
-    model.add(tfk.layers.Dense(108, activation='relu')) #Second  Hidden Layer
-    for i in range(hp.Int("num_layers", min_value=1, max_value=3, step=1)):
-        model.add(tfk.layers.Dense(hp.Int(f"units_{i}", min_value=54, max_value=108, step=16), activation='relu'))
-    # model.add(tfk.layers.Dense(54, activation='relu')) #Third  Hidden Layer
-    model.add(tfk.layers.Dense(10, activation='softmax')) #Output Layer
-    #model Looks like:  784 input -> [50 units in layer1] ->[100 units in layer2] -> 1 output
+        )
+    model.add(tfk.layers.Dense(108, activation='relu'))
+    model.add(tfk.layers.Dense(10, activation='softmax'))
     
-    model.compile(optimizer=tfk.optimizers.Adam(hp.Choice("learning_rate", values=[1e-2, 1e-3, 1e-4])),
-                  # loss='sparse_categorical_crossentropy',
-                  loss = hamming_loss,
-                  metrics=['sparse_categorical_accuracy'])
-    model.summary()
+    model.compile(
+                    # optimizer=tfk.optimizers.Adam(hp.Choice("learning_rate", values=[1e-2, 1e-3, 1e-4])),
+                    optimizer='adam',
+                    # loss='sparse_categorical_crossentropy',
+                    loss = hamming_loss,
+                   metrics=['sparse_categorical_accuracy'],
+                   run_eagerly = True
+                  )
+    # model.summary()
     return model
 
 tuner = RandomSearch(
-                        tuner_build_model, 
-                        objective='sparse_categorical_accuracy', 
-                        max_trials = 10,
-                        executions_per_trial=2, # reduce variance.
+                        tuner_build_model,
+                        objective='sparse_categorical_accuracy',
+                        max_trials = 3,
+                        executions_per_trial=1, # reduce variance.
                         )
 
 tuner.search(X_train, y_train, epochs=2, validation_data=(X_test, y_test),
