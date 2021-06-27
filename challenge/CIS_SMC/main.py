@@ -170,17 +170,16 @@ def tuner_build_model(hp):
                   loss = hamming_loss,
                   metrics=['sparse_categorical_accuracy'])
     model.summary()
-
     return model
 
 tuner = RandomSearch(
                         tuner_build_model, 
                         objective='sparse_categorical_accuracy', 
-                        max_trials = 30,
+                        max_trials = 10,
                         executions_per_trial=2, # reduce variance.
                         )
 
-tuner.search(X_train, y_train, epochs=20, validation_data=(X_test, y_test),
+tuner.search(X_train, y_train, epochs=2, validation_data=(X_test, y_test),
                         callbacks=[tfk.callbacks.EarlyStopping('val_loss', patience=3)])
 best_model = tuner.get_best_models()[0]
 best_model.summary()
