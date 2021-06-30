@@ -14,6 +14,8 @@ from kerastuner.engine.hyperparameters import HyperParameters
 
 from sklearn.datasets import make_classification
 
+import sys
+sys.path.append('C:/Users/donwen.CORPDOM\WS/wen/uwinds3/challenge/CIS_SMC')
 from util import *
 
 # exact match ratio
@@ -48,7 +50,6 @@ df = pd.read_csv("Train.csv")
 df = df.drop(['Label2'], axis=1)
 df = remove_correlations(df)
 # df = remove_sparses(df, col_number=2)
-
 # df = remove_lowcor_with_label(df, 'Label1')
 # df = remove_linears(df, reverse=True)
 # df = df.drop(['F10', 'F12', 'F13', 'F20', 'F27'], axis=1)
@@ -92,7 +93,7 @@ def hamming_loss(y_true, y_pred):
     #         temp += 1
     # return temp/(len(y_true) * 2)
 
-def tuner_build_model(hp):
+def build_model(hp):
     model = tfk.Sequential()
     model.add(tfk.layers.Dense(
         X_train.shape[1]+1,
@@ -110,20 +111,24 @@ def tuner_build_model(hp):
                    metrics=['sparse_categorical_accuracy'],
                    run_eagerly = True
                   )
-    # model.summary()
+    model.summary()
     return model
 
-tuner = RandomSearch(
-                        tuner_build_model,
-                        objective='sparse_categorical_accuracy',
-                        max_trials = 3,
-                        executions_per_trial=1, # reduce variance.
-                        )
+model = build_model(None)
+model.fit(X_train, y_train, epochs=1, batch_size=16, validation_data=(X_test, y_test),
+                        callbacks=[tfk.callbacks.EarlyStopping('val_loss', patience=2)])
 
-tuner.search(X_train, y_train, epochs=2, validation_data=(X_test, y_test),
-                        callbacks=[tfk.callbacks.EarlyStopping('val_loss', patience=3)])
-best_model = tuner.get_best_models()[0]
-best_model.summary()
+# tuner = RandomSearch(
+#                         tuner_build_model,
+#                         objective='sparse_categorical_accuracy',
+#                         max_trials = 1,
+#                         executions_per_trial=1, # reduce variance.
+#                         )
+
+# tuner.search(X_train, y_train, epochs=2, batch_size=16, validation_data=(X_test, y_test),
+#                         callbacks=[tfk.callbacks.EarlyStopping('val_loss', patience=3)])
+# best_model = tuner.get_best_models()[0]
+# best_model.summary()
 
 
 # 1. try without reducing - 0.8072, 0.8094, 0.8058
