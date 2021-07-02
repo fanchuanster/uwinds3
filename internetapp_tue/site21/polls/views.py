@@ -23,7 +23,7 @@ from django.shortcuts import get_object_or_404
 
 def index(request):
     top_list = Topic.objects.all().order_by('id')[:10]
-    return render(request, 'polls/index0.html', {'top_list': top_list})
+    return render(request, 'polls/index.html', {'top_list': top_list})
 
 def about(request):
     # return HttpResponse('This is an E-learning Website! Search our Topics to find all available Courses.')
