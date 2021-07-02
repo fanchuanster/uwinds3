@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 from collections import defaultdict
 from kerastuner import RandomSearch
 from kerastuner.engine.hyperparameters import HyperParameters
+from sklearn.metrics import hamming_loss
 
 from sklearn.datasets import make_classification
 
@@ -28,7 +29,7 @@ from util import *
 def select_kbest(x,y, k=17):
     fs = SelectKBest(score_func=f_classif, k=k)
     X_selected = fs.fit_transform(x, y)
-    # print(X_selected.shape)
+    print('select_kbest', X_selected.shape)
     return X_selected
     
 def df_statistics(df):
@@ -56,12 +57,24 @@ df = remove_correlations(df)
         
 x_df = df.iloc[:, :-1].astype('float32')
 y_df = df.iloc[:, -1:].astype('int32')
+y_df = y_df - 1
+
+x = select_kbest(x, np.ravel(y_df), k='all')
 
 # t = select_kbest(x_df, np.ravel(y_df))
-
 sc = preprocessing.StandardScaler()
 x = sc.fit_transform(x_df)
 x = quantile(x)
+
+
+enc = preprocessing.OneHotEncoder()
+onehot_y = enc.fit_transform(y_df).toarray()
+
+
+
+# print(type(onehot_y))
+# np.shape(onehot_y)
+# print(onehot_y)
 
 # normaliztn = preprocessing.Normalizer(norm='l2')
 # x = normaliztn.fit_transform(x)
@@ -69,7 +82,7 @@ x = quantile(x)
 # df_statistics(x_df)
 # x = preprocessing.normalize(x_df, norm='l2', axis=1, copy=True, return_norm=False)
 
-X_train, X_test, y_train, y_test = train_test_split(x, y_df-1, test_size=0.2, random_state=0)
+X_train, X_test, y_train, y_test = train_test_split(x, onehot_y, test_size=0.2, random_state=0)
 
 def hamming_loss(y_true, y_pred):
     print("hamming_loss", y_true.shape, y_true)
@@ -77,21 +90,34 @@ def hamming_loss(y_true, y_pred):
     # kb.print_tensor(y_true)
     # loss = tfk.losses.sparse_categorical_crossentropy(y_true, y_pred)
     
-    scce = tfk.losses.SparseCategoricalCrossentropy(from_logits=True)
-    # print(scce(y_true, y_pred).numpy())
-    return scce(y_true, y_pred)
-    # special_class = 6
-    # temp=0
-    # print("hamming_loss", y_true.shape, y_true)
-    # print("hamming_loss", y_pred.shape, y_pred)
-    # for i in range(len(y_true)):
-    #     if y_true[i] == y_pred[i]:
-    #         temp += 2
-    #     elif y_true[i] == special_class and y_pred[i] != special_class:
-    #         temp += 0
-    #     else:
-    #         temp += 1
-    # return temp/(len(y_true) * 2)
+    y_pred_index = y_pred.argmax(axis=1)
+    
+    # scce = tfk.losses.SparseCategoricalCrossentropy()
+    # # print(scce(y_true, y_pred).numpy())
+    # return scce(y_true, y_pred)
+    special_class = 6
+    temp=0
+    assert(len(y_true) == len(y_pred_index))
+    for i in range(len(y_true)):
+        if y_true[i] == y_pred[i]:
+            temp += 2
+        elif y_true[i] == special_class and y_pred[i] != special_class:
+            temp += 0
+        else:
+            temp += 1
+    return temp/(len(y_true) * 2)
+
+def Custom_Hamming_Loss(y_true, y_pred):
+  return kb.mean(y_true*(1-y_pred)+(1-y_true)*y_pred)
+
+def Custom_Hamming_Loss1(y_true, y_pred):
+  tmp = kb.abs(y_true-y_pred)
+  return kb.mean(K.cast(K.greater(tmp,0.5),dtype=float))
+
+def hamming_loss_2(y_true, y_pred):
+    print("y_pred", y_pred.shape, y_pred)
+    print("y_true", y_true.shape, y_true)
+    hamming_loss(y_true, y_pred)
 
 def build_model(hp):
     model = tfk.Sequential()
@@ -103,20 +129,27 @@ def build_model(hp):
     model.add(tfk.layers.Dense(108, activation='relu'))
     model.add(tfk.layers.Dense(10, activation='softmax'))
     
+    # optimizer=tfk.optimizers.Adam(hp.Choice("learning_rate", values=[1e-2, 1e-3, 1e-4])),
     model.compile(
-                    # optimizer=tfk.optimizers.Adam(hp.Choice("learning_rate", values=[1e-2, 1e-3, 1e-4])),
                     optimizer='adam',
                     # loss='sparse_categorical_crossentropy',
-                    loss = hamming_loss,
-                   metrics=['sparse_categorical_accuracy'],
-                   run_eagerly = True
+                    # loss='categorical_crossentropy',
+                    loss = hamming_loss_2,
+                    # metrics=['sparse_categorical_accuracy'],
+                    metrics=['categorical_accuracy'],
+                    # run_eagerly = True
                   )
     model.summary()
     return model
 
 model = build_model(None)
-model.fit(X_train, y_train, epochs=1, batch_size=16, validation_data=(X_test, y_test),
-                        callbacks=[tfk.callbacks.EarlyStopping('val_loss', patience=2)])
+training = model.fit(X_train, y_train, epochs=30, batch_size=64, validation_data=(X_test, y_test), callbacks=[tfk.callbacks.EarlyStopping('val_loss', patience=3)])
+# visualize(training)
+
+
+                        # callbacks=[tfk.callbacks.EarlyStopping('val_loss', patience=2)]
+
+
 
 # tuner = RandomSearch(
 #                         tuner_build_model,
@@ -126,7 +159,7 @@ model.fit(X_train, y_train, epochs=1, batch_size=16, validation_data=(X_test, y_
 #                         )
 
 # tuner.search(X_train, y_train, epochs=2, batch_size=16, validation_data=(X_test, y_test),
-#                         callbacks=[tfk.callbacks.EarlyStopping('val_loss', patience=3)])
+#                         )
 # best_model = tuner.get_best_models()[0]
 # best_model.summary()
 
