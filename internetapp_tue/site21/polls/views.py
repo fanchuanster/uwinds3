@@ -1,25 +1,29 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from .forms import SearchForm
 from django.http import Http404
 from .models import Student, Topic, Course
 from django.shortcuts import get_object_or_404
-#
-# def index(request):
-#     topics = Topic.objects.all().order_by('id')[:10]
-#     response = HttpResponse()
-#     heading = '<p>' + 'List of topics:' + '</p>'
-#     response.write(heading)
-#     for topic in topics:
-#         topic_str = '<p>' + str(topic.id) + ': ' + str(topic) + '<p>'
-#         response.write(topic_str)
-#     courses = Course.objects.all().order_by('-title')[:5]
-#     heading = '<p>' + 'List of courses:' + '</p>'
-#     response.write(heading)
-#     for course in courses:
-#         course_str = '<p>' + str(course.title) + ': ' + str(course.price) + '<p>'
-#         response.write(course_str)
-#     return response
 
+def findcourses(request):
+    if request.method == 'POST':
+        form = SearchForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            length = form.cleaned_data['length']
+            max_price = form.cleaned_data['max_price']
+            if length:
+                topics = Topic.objects.filter(length=length)
+            else:
+                topics = Topic.objects.all()
+            courselist = []
+            for topic in topics:
+                courselist = courselist + list(topic.courses.filter(price__lte=max_price))
+            return render(request, 'polls/results.html', { 'courselist':courselist, 'name':name, 'length':length })
+        else:
+            return HttpResponse('Invalid data' + str(form.errors))
+    else:
+        return render(request, 'polls/findcourses.html', { 'form': SearchForm()})
 
 def index(request):
     top_list = Topic.objects.all().order_by('id')[:10]

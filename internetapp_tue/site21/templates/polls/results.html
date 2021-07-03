@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block body_block %}
+    <div>Hello {{ name }}</div>
+    <ul>
+    {% for course in courselist %}
+        <li>{{ course }} - ${{ course.price }}</li>
+    {% endfor %}
+    </ul>
+{% endblock %}

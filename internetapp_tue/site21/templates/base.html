@@ -18,16 +18,22 @@
 </h1>
     {% block body_block %}*** {% endblock %}
 </div>
-{% if request.view != "index" %}
+
     <hr />
     <div>
     <ul>
+        {% if request.view != "index" %}
     <li class="hbar1">
         <a href = "{% url 'polls:index' %}">Click here to return to main page</a>
         <br/>
     </li>
+        {% endif %}
+    <li class="hbar1">
+        <a href = "{% url 'polls:findcourses' %}">Click here to search courses</a>
+        <br/>
+    </li>
     </ul>
     </div>
-{% endif %}
+
 </body>
 </html>

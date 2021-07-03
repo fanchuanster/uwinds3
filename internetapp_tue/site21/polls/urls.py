@@ -22,6 +22,7 @@ urlpatterns = [
     path(r'', views.index, name='index'),
     # the path should not prefixed with /
     # path('student/<int:student_id>/', views.student_details, name='student_details')
-    path('about/', views.about, name='about'),
-    path('<int:topic_id>/', views.detail, name='detail')
+    path('about/', views.about, name='about1'),
+    path('<int:topic_id>/', views.detail, name='detail'),
+    path('findcourses', views.findcourses, name='findcourses')
 ]
