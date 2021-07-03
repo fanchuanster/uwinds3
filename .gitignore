@@ -35,6 +35,7 @@
 Exercise Files/
 ~$*
 
+*.cpython*
 *.zip
 *.pyc
 /migrations/*

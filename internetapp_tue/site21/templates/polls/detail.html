@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block body_block %}
+    <body>
+        <div>
+            <br>
+            <label>Name: {{ name }}</label>
+            <br>
+            <label>Length: {{ length }}</label>
+        </div>
+        <div>
+            {% for course in courses %}
+            <li>
+                {{ course.title | capfirst }}
+            </li>
+            {% endfor %}
+        </div>
+    </body>
+{% endblock %}

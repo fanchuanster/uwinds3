@@ -7,15 +7,27 @@
 </head>
 <body>
 <div>
-<h1>{% block myhdg %}Hello User {% endblock %}</h1>
-{% block body_block %}*** {% endblock %}
+<h1>
+    {% block myhdg %}Hello
+        {% if user.is_authenticated %}
+            {{ user.username }}
+        {% else %}
+            Not logged in.
+        {% endif %}
+        {% endblock %}
+</h1>
+    {% block body_block %}*** {% endblock %}
 </div>
-<hr />
-<div>
-<ul>
-<li class="hbar1"><a href="/myapp/about/">Find out about this site</a></li>
-<li class="hbar1"><a href = "{% url 'polls:index' %}">Click here to return to main page</a><br/></li>
-</ul>
-</div>
+{% if request.view != "index" %}
+    <hr />
+    <div>
+    <ul>
+    <li class="hbar1">
+        <a href = "{% url 'polls:index' %}">Click here to return to main page</a>
+        <br/>
+    </li>
+    </ul>
+    </div>
+{% endif %}
 </body>
 </html>

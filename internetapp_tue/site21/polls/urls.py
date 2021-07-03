@@ -19,7 +19,6 @@ from polls import views
 
 app_name="polls"
 urlpatterns = [
-    path('admin/', admin.site.urls),
     path(r'', views.index, name='index'),
     # the path should not prefixed with /
     # path('student/<int:student_id>/', views.student_details, name='student_details')

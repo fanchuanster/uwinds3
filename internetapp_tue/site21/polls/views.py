@@ -23,16 +23,16 @@ from django.shortcuts import get_object_or_404
 
 def index(request):
     top_list = Topic.objects.all().order_by('id')[:10]
+    setattr(request, 'view', 'index')
     return render(request, 'polls/index.html', {'top_list': top_list})
 
 def about(request):
-    # return HttpResponse('This is an E-learning Website! Search our Topics to find all available Courses.')
-    return render(request, 'polls/about0.html')
+    return render(request, 'polls/about.html')
 
 def detail(request, topic_id):
     topic = get_object_or_404(Topic, id=topic_id)
     courses = Course.objects.filter(topic__id=topic_id)
-    return render(request, 'polls/detail0.html',
+    return render(request, 'polls/detail.html',
                   {
                       'name': topic.name,
                       'length': topic.length,

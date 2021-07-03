@@ -1,5 +1,14 @@
 {% extends 'base.html' %}
 {% block body_block %}
-    {% if top_list %} <h2>List of Topics</h2> <ol> {% for top in top_list %} <li> {{ top.name}} </li> {% endfor %} </ol> {% else %} <strong>There are no available topics!</strong> {% endif %}
-        <p><a href="{% url 'polls:about' %}">About page</a></p>
+    {% if top_list %}
+        <h2>List of Topics</h2>
+        <ol>
+            {% for top in top_list %}
+                <li> <a href="{% url 'polls:detail' top.id %}">{{ top.name}} </a></li>
+            {% endfor %}
+        </ol>
+    {% else %}
+        <strong>There are no available topics!</strong>
+    {% endif %}
+    <p><a href="{% url 'polls:about' %}">About page</a></p>
 {% endblock %}
