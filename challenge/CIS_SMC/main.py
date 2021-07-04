@@ -16,36 +16,8 @@ from sklearn.metrics import hamming_loss
 from sklearn.datasets import make_classification
 
 import sys
-sys.path.append('C:/Users/donwen.CORPDOM\WS/wen/uwinds3/challenge/CIS_SMC')
+sys.path.append('C:/Users/donwen.CORPDOM/WS/wen/t3/challenge/CIS_SMC')
 from util import *
-
-# exact match ratio
-#MR = np.all(y_pred == y_true, axis=1).mean()
-# def exact_match_ratio_loss(y_actual, y_pred):
-#     return y_atual != y_pred
-
-    
-# https://machinelearningmastery.com/chi-squared-test-for-machine-learning/
-def select_kbest(x,y, k=17):
-    fs = SelectKBest(score_func=f_classif, k=k)
-    X_selected = fs.fit_transform(x, y)
-    print('select_kbest', X_selected.shape)
-    return X_selected
-    
-def df_statistics(df):
-    for column in df:
-        col = df[column]
-        print(column, '\n', col.value_counts())
-def analyze_labels(y_df):
-    y_df['Label'] = y_df.apply(lambda r: r['Label1'] * (-1 if r['Label2'] == 0 else 1), axis=1).astype(np.int64)    
-    df_statistics(y_df)
-    
-def quantile(X_train):
-    # NON-LINEAR Column-wise,  STANDARDIZATION in Column-wise
-    # 'skewed/congested' or 'highly-spread' data to standard normal
-    quantile_trans = preprocessing.QuantileTransformer(output_distribution='uniform', random_state=48)
-    X_train_2 = quantile_trans.fit_transform(X_train)
-    return X_train_2
 
 df = pd.read_csv("Train.csv")
 df = df.drop(['Label2'], axis=1)
@@ -59,65 +31,27 @@ x_df = df.iloc[:, :-1].astype('float32')
 y_df = df.iloc[:, -1:].astype('int32')
 y_df = y_df - 1
 
-x = select_kbest(x, np.ravel(y_df), k='all')
+# x = select_kbest(x, np.ravel(y_df), k='all')
 
-# t = select_kbest(x_df, np.ravel(y_df))
 sc = preprocessing.StandardScaler()
 x = sc.fit_transform(x_df)
 x = quantile(x)
+normaliztn = preprocessing.Normalizer(norm='l2')
+x = normaliztn.fit_transform(x)
 
-
-enc = preprocessing.OneHotEncoder()
-onehot_y = enc.fit_transform(y_df).toarray()
-
-
+# enc = preprocessing.OneHotEncoder()
+# y_df = enc.fit_transform(y_df).toarray()
 
 # print(type(onehot_y))
 # np.shape(onehot_y)
 # print(onehot_y)
 
-# normaliztn = preprocessing.Normalizer(norm='l2')
-# x = normaliztn.fit_transform(x)
+
 
 # df_statistics(x_df)
 # x = preprocessing.normalize(x_df, norm='l2', axis=1, copy=True, return_norm=False)
 
-X_train, X_test, y_train, y_test = train_test_split(x, onehot_y, test_size=0.2, random_state=0)
-
-def hamming_loss(y_true, y_pred):
-    print("hamming_loss", y_true.shape, y_true)
-    print("hamming_loss", y_pred.shape, y_pred)
-    # kb.print_tensor(y_true)
-    # loss = tfk.losses.sparse_categorical_crossentropy(y_true, y_pred)
-    
-    y_pred_index = y_pred.argmax(axis=1)
-    
-    # scce = tfk.losses.SparseCategoricalCrossentropy()
-    # # print(scce(y_true, y_pred).numpy())
-    # return scce(y_true, y_pred)
-    special_class = 6
-    temp=0
-    assert(len(y_true) == len(y_pred_index))
-    for i in range(len(y_true)):
-        if y_true[i] == y_pred[i]:
-            temp += 2
-        elif y_true[i] == special_class and y_pred[i] != special_class:
-            temp += 0
-        else:
-            temp += 1
-    return temp/(len(y_true) * 2)
-
-def Custom_Hamming_Loss(y_true, y_pred):
-  return kb.mean(y_true*(1-y_pred)+(1-y_true)*y_pred)
-
-def Custom_Hamming_Loss1(y_true, y_pred):
-  tmp = kb.abs(y_true-y_pred)
-  return kb.mean(K.cast(K.greater(tmp,0.5),dtype=float))
-
-def hamming_loss_2(y_true, y_pred):
-    print("y_pred", y_pred.shape, y_pred)
-    print("y_true", y_true.shape, y_true)
-    hamming_loss(y_true, y_pred)
+X_train, X_test, y_train, y_test = train_test_split(x, y_df, test_size=0.2, random_state=0)
 
 def build_model(hp):
     model = tfk.Sequential()
@@ -127,41 +61,35 @@ def build_model(hp):
         activation='relu')
         )
     model.add(tfk.layers.Dense(108, activation='relu'))
+    model.add(tfk.layers.Dense(108, activation='relu'))
     model.add(tfk.layers.Dense(10, activation='softmax'))
     
     # optimizer=tfk.optimizers.Adam(hp.Choice("learning_rate", values=[1e-2, 1e-3, 1e-4])),
     model.compile(
-                    optimizer='adam',
-                    # loss='sparse_categorical_crossentropy',
+                    optimizer=tfk.optimizers.Adam(learning_rate=hp.Choice("learning_rate", values=[1e-2, 1e-3, 1e-4])),
+                    loss='sparse_categorical_crossentropy',
                     # loss='categorical_crossentropy',
-                    loss = hamming_loss_2,
-                    # metrics=['sparse_categorical_accuracy'],
-                    metrics=['categorical_accuracy'],
-                    # run_eagerly = True
+                    metrics=['sparse_categorical_accuracy'],
+                    # metrics=['categorical_accuracy']
                   )
     model.summary()
     return model
 
-model = build_model(None)
-training = model.fit(X_train, y_train, epochs=30, batch_size=64, validation_data=(X_test, y_test), callbacks=[tfk.callbacks.EarlyStopping('val_loss', patience=3)])
+# model = build_model(None)
+# training = model.fit(X_train, y_train, epochs=30, batch_size=64, validation_data=(X_test, y_test), callbacks=[tfk.callbacks.EarlyStopping('val_loss', patience=2)])
 # visualize(training)
 
+tuner = RandomSearch(
+                        build_model,
+                        objective='sparse_categorical_accuracy',
+                        max_trials = 10,
+                        executions_per_trial=1, # reduce variance.
+                        )
 
-                        # callbacks=[tfk.callbacks.EarlyStopping('val_loss', patience=2)]
-
-
-
-# tuner = RandomSearch(
-#                         tuner_build_model,
-#                         objective='sparse_categorical_accuracy',
-#                         max_trials = 1,
-#                         executions_per_trial=1, # reduce variance.
-#                         )
-
-# tuner.search(X_train, y_train, epochs=2, batch_size=16, validation_data=(X_test, y_test),
-#                         )
-# best_model = tuner.get_best_models()[0]
-# best_model.summary()
+tuner.search(X_train, y_train, epochs=2, batch_size=64, validation_data=(X_test, y_test),
+                        )
+best_model = tuner.get_best_models()[0]
+best_model.summary()
 
 
 # 1. try without reducing - 0.8072, 0.8094, 0.8058

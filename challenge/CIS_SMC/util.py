@@ -73,8 +73,8 @@ def visualize(training):
     fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(8,4))
     #Plot training and validation accuracy values
     #axes[0].set_ylim(0,1) #if we want to limit axis in certain range
-    axes[0].plot(training.history['sparse_categorical_accuracy'], label='Train')
-    axes[0].plot(training.history['val_sparse_categorical_accuracy'], label='Validation')
+    axes[0].plot(training.history['accuracy'], label='Train')
+    axes[0].plot(training.history['val_accuracy'], label='Validation')
     axes[0].set_title('Model Accuracy')
     axes[0].set_xlabel('Epoch')
     axes[0].set_ylabel('Accuracy')
@@ -90,7 +90,63 @@ def visualize(training):
     plt.tight_layout()
     plt.show()
 
+# https://machinelearningmastery.com/chi-squared-test-for-machine-learning/
+def hamming_loss(y_true, y_pred):
+    print("hamming_loss", y_true.shape, y_true)
+    print("hamming_loss", y_pred.shape, y_pred)
+    # kb.print_tensor(y_true)
+    # loss = tfk.losses.sparse_categorical_crossentropy(y_true, y_pred)
+    
+    y_pred_index = y_pred.argmax(axis=1)
+    
+    # scce = tfk.losses.SparseCategoricalCrossentropy()
+    # # print(scce(y_true, y_pred).numpy())
+    # return scce(y_true, y_pred)
+    special_class = 6
+    temp=0
+    assert(len(y_true) == len(y_pred_index))
+    for i in range(len(y_true)):
+        if y_true[i] == y_pred[i]:
+            temp += 2
+        elif y_true[i] == special_class and y_pred[i] != special_class:
+            temp += 0
+        else:
+            temp += 1
+    return temp/(len(y_true) * 2)
 
+def Custom_Hamming_Loss(y_true, y_pred):
+  return kb.mean(y_true*(1-y_pred)+(1-y_true)*y_pred)
+
+def Custom_Hamming_Loss1(y_true, y_pred):
+  tmp = kb.abs(y_true-y_pred)
+  return kb.mean(K.cast(K.greater(tmp,0.5),dtype=float))
+
+def hamming_loss_2(y_true, y_pred):
+    print("y_pred", y_pred.shape, y_pred)
+    print("y_true", y_true.shape, y_true)
+    hamming_loss(y_true, y_pred)
+
+def select_kbest(x,y, k=17):
+    fs = SelectKBest(score_func=f_classif, k=k)
+    X_selected = fs.fit_transform(x, y)
+    print('select_kbest', X_selected.shape)
+    return X_selected
+    
+def df_statistics(df):
+    for column in df:
+        col = df[column]
+        print(column, '\n', col.value_counts())
+def analyze_labels(y_df):
+    y_df['Label'] = y_df.apply(lambda r: r['Label1'] * (-1 if r['Label2'] == 0 else 1), axis=1).astype(np.int64)    
+    df_statistics(y_df)
+    
+def quantile(X_train):
+    # NON-LINEAR Column-wise,  STANDARDIZATION in Column-wise
+    # 'skewed/congested' or 'highly-spread' data to standard normal
+    quantile_trans = preprocessing.QuantileTransformer(output_distribution='uniform', random_state=48)
+    X_train_2 = quantile_trans.fit_transform(X_train)
+    return X_train_2
+	
 #Training the model 
 # sss = StratifiedShuffleSplit(n_splits=40, test_size=0.2, random_state=0)
 # training = None
