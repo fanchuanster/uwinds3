@@ -27,9 +27,9 @@ def select_features(train_X, train_y):
         if reg.feature_importances_[i] < 0.01:
             columns_to_drop.append(train_X.columns[i])
     train_X = train_X.drop(columns_to_drop, axis=1)
-    print("select_features - {} featuers selected".format(len(select_features.columns)))
-    res = reg.score(train_X, train_y)
-    print(res)
+    print("select_features - {} featuers selected".format(len(train_X.columns)))
+    # res = reg.score(train_X, train_y)
+    # print(res)
     return train_X
     
 df = pd.read_csv("Train.csv")
