@@ -3,22 +3,35 @@ import numpy as np
 from collections import defaultdict
 from sklearn import preprocessing, decomposition
 from sklearn.feature_selection import SelectKBest, f_classif
+from sklearn.ensemble import ExtraTreesRegressor
 from sklearn.model_selection import train_test_split, StratifiedShuffleSplit
 import tensorflow as tf
 import tensorflow.keras as tfk
 import tensorflow.keras.backend as kb
 import matplotlib.pyplot as plt
 from collections import defaultdict
-from kerastuner import RandomSearch
+from kerastuner import RandomSearch, Hyperband
 from kerastuner.engine.hyperparameters import HyperParameters
 from sklearn.metrics import hamming_loss
-
+from datetime import datetime
 from sklearn.datasets import make_classification
 
 import sys
 sys.path.append('C:/Users/donwen.CORPDOM/WS/wen/t3/challenge/CIS_SMC')
 from util import *
 
+def select_features(train_X, train_y):
+    reg = ExtraTreesRegressor(n_estimators=100, random_state=0).fit(train_X, np.ravel(train_y))
+    columns_to_drop = []
+    for i in range(train_X.shape[1]):
+        if reg.feature_importances_[i] < 0.01:
+            columns_to_drop.append(train_X.columns[i])
+    train_X = train_X.drop(columns_to_drop, axis=1)
+    print("select_features - {} featuers selected".format(len(select_features.columns)))
+    res = reg.score(train_X, train_y)
+    print(res)
+    return train_X
+    
 df = pd.read_csv("Train.csv")
 df = df.drop(['Label2'], axis=1)
 df = remove_correlations(df)
@@ -30,6 +43,8 @@ df = remove_correlations(df)
 x_df = df.iloc[:, :-1].astype('float32')
 y_df = df.iloc[:, -1:].astype('int32')
 y_df = y_df - 1
+
+x_df = select_features(x_df, y_df)
 
 # x = select_kbest(x, np.ravel(y_df), k='all')
 
@@ -61,13 +76,13 @@ def build_model(hp):
         activation='relu')
         )
     model.add(tfk.layers.Dense(108, activation='relu'))
-    model.add(tfk.layers.Dense(108, activation='relu'))
     model.add(tfk.layers.Dense(10, activation='softmax'))
     
     # optimizer=tfk.optimizers.Adam(hp.Choice("learning_rate", values=[1e-2, 1e-3, 1e-4])),
     model.compile(
                     optimizer=tfk.optimizers.Adam(learning_rate=hp.Choice("learning_rate", values=[1e-2, 1e-3, 1e-4])),
                     loss='sparse_categorical_crossentropy',
+                    # loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
                     # loss='categorical_crossentropy',
                     metrics=['sparse_categorical_accuracy'],
                     # metrics=['categorical_accuracy']
@@ -79,17 +94,34 @@ def build_model(hp):
 # training = model.fit(X_train, y_train, epochs=30, batch_size=64, validation_data=(X_test, y_test), callbacks=[tfk.callbacks.EarlyStopping('val_loss', patience=2)])
 # visualize(training)
 
-tuner = RandomSearch(
-                        build_model,
-                        objective='sparse_categorical_accuracy',
-                        max_trials = 10,
-                        executions_per_trial=1, # reduce variance.
-                        )
+tuner = Hyperband(
+                    build_model,
+                    objective='val_sparse_categorical_accuracy',
+                    max_epochs = 10,
+                    factor=3,
+                    directory='tuner/{}'.format(datetime.now().timestamp()),
+                    )
 
-tuner.search(X_train, y_train, epochs=2, batch_size=64, validation_data=(X_test, y_test),
-                        )
-best_model = tuner.get_best_models()[0]
-best_model.summary()
+tuner.search(X_train, y_train, epochs=20, batch_size=64, validation_data=(X_test, y_test),
+                        callbacks=[tfk.callbacks.EarlyStopping('val_loss', patience=3)])
+# best_model = tuner.get_best_models()[0]
+# best_model.summary()
+
+best_hps=tuner.get_best_hyperparameters(num_trials=1)[0]
+print(f"""
+The hyperparameter search is complete. The optimal number of units in the first densely-connected
+is {best_hps.get('learning_rate')}.
+""")
+
+model = tuner.hypermodel.build(best_hps)
+history = model.fit(X_train, y_train, epochs=50, batch_size=64, validation_data=(X_test, y_test),
+                        callbacks=[tfk.callbacks.EarlyStopping('val_loss', patience=3)])
+
+val_acc_per_epoch = history.history['val_sparse_categorical_accuracy']
+best_epoch = val_acc_per_epoch.index(max(val_acc_per_epoch)) + 1
+print('Best epoch: %d' % (best_epoch,))
+
+
 
 
 # 1. try without reducing - 0.8072, 0.8094, 0.8058
