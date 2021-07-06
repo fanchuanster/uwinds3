@@ -129,7 +129,7 @@ best_epoch = val_acc_per_epoch.index(max(val_acc_per_epoch)) + 1
 print('Best epoch: %d' % (best_epoch,))
 
 test_loss, test_accuracy = model.evaluate(x_test_df, y_test_df['Label1'], verbose=2)
-print('Test loss and Test Accuracy: {0:.2f}, {1:.2f}%'.format(test_loss, test_accuracy*100))
+print('Test loss and Test Accuracy: {0:.2f} {1:.2f}%'.format(test_loss, test_accuracy*100))
 
 
 def hamming_accuracy(y_true_df, y_pred):
@@ -145,7 +145,7 @@ y_pred = y_pred__with_label2
 hamming_test_accuracy = hamming_accuracy(y_test_df, y_pred)
 hamming_test_loss = 1 - hamming_test_accuracy
 
-print('Hammigng loss and Accuracy: {0:.2f}, {1:.2f}%'.format(hamming_test_loss, hamming_test_accuracy*100))
+print('Hammigng loss and Accuracy: {0:.2f} {1:.2f}%'.format(hamming_test_loss, hamming_test_accuracy*100))
 
 
 # 1. try without reducing - 0.8072, 0.8094, 0.8058
