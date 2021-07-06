@@ -69,23 +69,23 @@ def remove_linears(df, reverse=False):
     return df
 
 def visualize(training):
-    #Visulaizing the Training and Validation Sets Loss and Accuracy
+    #visulaizing the training and validation sets loss and accuracy
     fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(8,4))
-    #Plot training and validation accuracy values
+    #plot training and validation accuracy values
     #axes[0].set_ylim(0,1) #if we want to limit axis in certain range
-    axes[0].plot(training.history['accuracy'], label='Train')
-    axes[0].plot(training.history['val_accuracy'], label='Validation')
-    axes[0].set_title('Model Accuracy')
-    axes[0].set_xlabel('Epoch')
-    axes[0].set_ylabel('Accuracy')
+    axes[0].plot(training.history['sparse_categorical_accuracy'], label='train')
+    axes[0].plot(training.history['val_sparse_categorical_accuracy'], label='validation')
+    axes[0].set_title('model accuracy')
+    axes[0].set_xlabel('epoch')
+    axes[0].set_ylabel('accuracy')
     axes[0].legend()
-    #Plot training and validation loss values
+    #plot training and validation loss values
     #axes[1].set_ylim(0,1)
-    axes[1].plot(training.history['loss'], label='Train')
-    axes[1].plot(training.history['val_loss'], label='Validation')
-    axes[1].set_title('Model Loss')
-    axes[1].set_xlabel('Epoch')
-    axes[1].set_ylabel('Loss')
+    axes[1].plot(training.history['loss'], label='train')
+    axes[1].plot(training.history['val_loss'], label='validation')
+    axes[1].set_title('model loss')
+    axes[1].set_xlabel('epoch')
+    axes[1].set_ylabel('loss')
     axes[1].legend()
     plt.tight_layout()
     plt.show()
@@ -119,7 +119,7 @@ def Custom_Hamming_Loss(y_true, y_pred):
 
 def Custom_Hamming_Loss1(y_true, y_pred):
   tmp = kb.abs(y_true-y_pred)
-  return kb.mean(K.cast(K.greater(tmp,0.5),dtype=float))
+  return kb.mean(tfk.cast(tfk.greater(tmp,0.5),dtype=float))
 
 def hamming_loss_2(y_true, y_pred):
     print("y_pred", y_pred.shape, y_pred)
@@ -140,13 +140,6 @@ def analyze_labels(y_df):
     y_df['Label'] = y_df.apply(lambda r: r['Label1'] * (-1 if r['Label2'] == 0 else 1), axis=1).astype(np.int64)    
     df_statistics(y_df)
     
-def quantile(X_train):
-    # NON-LINEAR Column-wise,  STANDARDIZATION in Column-wise
-    # 'skewed/congested' or 'highly-spread' data to standard normal
-    quantile_trans = preprocessing.QuantileTransformer(output_distribution='uniform', random_state=48)
-    X_train_2 = quantile_trans.fit_transform(X_train)
-    return X_train_2
-	
 #Training the model 
 # sss = StratifiedShuffleSplit(n_splits=40, test_size=0.2, random_state=0)
 # training = None

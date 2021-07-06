@@ -16,8 +16,7 @@ from sklearn.metrics import hamming_loss
 from datetime import datetime
 from sklearn.datasets import make_classification
 
-import sys
-sys.path.append('C:/Users/donwen.CORPDOM/WS/wen/t3/challenge/CIS_SMC')
+# ensure to set current working directory to 'CIS_SMC/'
 from util import *
 
 def select_features(train_X, train_y):
@@ -27,41 +26,51 @@ def select_features(train_X, train_y):
         if reg.feature_importances_[i] < 0.01:
             columns_to_drop.append(train_X.columns[i])
     train_X = train_X.drop(columns_to_drop, axis=1)
-    print("select_features - {} featuers selected".format(len(train_X.columns)))
+    print("select_features by ExtraTreesRegressor - {} featuers selected".format(len(train_X.columns)))
     # res = reg.score(train_X, train_y)
     # print(res)
     return train_X
+
+def read_dataset(filename, withLabel2=False):
+    df = pd.read_csv(filename)
+    if not withLabel2:
+        df = df.drop(['Label2'], axis=1)
+    # df = remove_correlations(df)
+    # df = remove_sparses(df, col_number=2)
+    # df = remove_lowcor_with_label(df, 'Label1')
+    # df = remove_linears(df, reverse=True)
+    # df = df.drop(['F10', 'F12', 'F13', 'F20', 'F27'], axis=1)
+            
+    x_df = df.iloc[:, :-1].astype('float32')
+    y_df = df.iloc[:, -1:].astype('int32')
     
-df = pd.read_csv("Train.csv")
-df = df.drop(['Label2'], axis=1)
-df = remove_correlations(df)
-# df = remove_sparses(df, col_number=2)
-# df = remove_lowcor_with_label(df, 'Label1')
-# df = remove_linears(df, reverse=True)
-# df = df.drop(['F10', 'F12', 'F13', 'F20', 'F27'], axis=1)
-        
-x_df = df.iloc[:, :-1].astype('float32')
-y_df = df.iloc[:, -1:].astype('int32')
-y_df = y_df - 1
+    y_df = y_df - 1
+    return x_df, y_df
+
+x_df, y_df = read_dataset("./Dataset/Train.csv")
+x_test_df, y_test_df = read_dataset("./Dataset/Test.csv")
+
+df_statistics(y_test_df)
 
 x_df = select_features(x_df, y_df)
-
+x_test_df = x_test_df[x_df.columns]
 # x = select_kbest(x, np.ravel(y_df), k='all')
 
 sc = preprocessing.StandardScaler()
 x = sc.fit_transform(x_df)
-x = quantile(x)
+quantile_trans = preprocessing.QuantileTransformer(output_distribution='uniform', random_state=48)
+x = quantile_trans.fit_transform(x)
 normaliztn = preprocessing.Normalizer(norm='l2')
 x = normaliztn.fit_transform(x)
 
+
+x_test_df = sc.transform(x_test_df)
+x_test_df = quantile_trans.transform(x_test_df)
+x_test_df = normaliztn.transform(x_test_df)
+
+
 # enc = preprocessing.OneHotEncoder()
 # y_df = enc.fit_transform(y_df).toarray()
-
-# print(type(onehot_y))
-# np.shape(onehot_y)
-# print(onehot_y)
-
-
 
 # df_statistics(x_df)
 # x = preprocessing.normalize(x_df, norm='l2', axis=1, copy=True, return_norm=False)
@@ -75,24 +84,21 @@ def build_model(hp):
         input_shape=(X_train.shape[1],), 
         activation='relu')
         )
+    # model.add(tfk.layers.Dropout(0.2))
     model.add(tfk.layers.Dense(108, activation='relu'))
     model.add(tfk.layers.Dense(10, activation='softmax'))
     
     # optimizer=tfk.optimizers.Adam(hp.Choice("learning_rate", values=[1e-2, 1e-3, 1e-4])),
     model.compile(
                     optimizer=tfk.optimizers.Adam(learning_rate=hp.Choice("learning_rate", values=[1e-2, 1e-3, 1e-4])),
-                    loss='sparse_categorical_crossentropy',
-                    # loss=keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+                    # loss='sparse_categorical_crossentropy',
+                    loss=tfk.losses.SparseCategoricalCrossentropy(from_logits=True),
                     # loss='categorical_crossentropy',
                     metrics=['sparse_categorical_accuracy'],
                     # metrics=['categorical_accuracy']
                   )
     model.summary()
     return model
-
-# model = build_model(None)
-# training = model.fit(X_train, y_train, epochs=30, batch_size=64, validation_data=(X_test, y_test), callbacks=[tfk.callbacks.EarlyStopping('val_loss', patience=2)])
-# visualize(training)
 
 tuner = Hyperband(
                     build_model,
@@ -103,27 +109,30 @@ tuner = Hyperband(
                     )
 
 tuner.search(X_train, y_train, epochs=20, batch_size=64, validation_data=(X_test, y_test),
-                        callbacks=[tfk.callbacks.EarlyStopping('val_loss', patience=3)])
-# best_model = tuner.get_best_models()[0]
-# best_model.summary()
+                        callbacks=[tfk.callbacks.EarlyStopping('val_loss', patience=5)])
 
 best_hps=tuner.get_best_hyperparameters(num_trials=1)[0]
 print(f"""
-The hyperparameter search is complete. The optimal number of units in the first densely-connected
-is {best_hps.get('learning_rate')}.
+The hyperparameter search is complete. Best learning_rate is {best_hps.get('learning_rate')}.
 """)
 
 model = tuner.hypermodel.build(best_hps)
 history = model.fit(X_train, y_train, epochs=50, batch_size=64, validation_data=(X_test, y_test),
-                        callbacks=[tfk.callbacks.EarlyStopping('val_loss', patience=3)])
+                        callbacks=[tfk.callbacks.EarlyStopping('val_loss', patience=5)])
+visualize(history)
 
 val_acc_per_epoch = history.history['val_sparse_categorical_accuracy']
 best_epoch = val_acc_per_epoch.index(max(val_acc_per_epoch)) + 1
 print('Best epoch: %d' % (best_epoch,))
 
+test_loss, test_accuracy = model.evaluate(x_test_df, y_test_df, verbose=2)
+print('Test loss: {0:.2f}, Test Accuracy: {1:.2f}%'.format(test_loss, test_accuracy*100)) 
 
 
-
+y_pred_raw = model.predict(x_test_df)
+y_pred = np.argmax(y_pred_raw, axis=1)
+y_pred__with_label2 = np.array([[i,1 if i!=6 else 0] for i in y_pred])
+print(y_pred__with_label2)
 # 1. try without reducing - 0.8072, 0.8094, 0.8058
 # 2. remove correlations - 0.7999, 0.8005, 0.7995
 # 3. remove sparse - 0.8067, 0.8055, 0.8048 ; col_number=2 - 0.8045, 0.8065
