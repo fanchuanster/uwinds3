@@ -35,21 +35,24 @@ def read_dataset(filename, withLabel2=False):
     df = pd.read_csv(filename)
     if not withLabel2:
         df = df.drop(['Label2'], axis=1)
+        x_df = df.iloc[:, :-1].astype('float32')
+        y_df = df.iloc[:, -1:].astype('int32')
+    else:
+        x_df = df.iloc[:, :-2].astype('float32')
+        y_df = df.iloc[:, -2:].astype('int32')
+    y_df['Label1'] = y_df['Label1'] - 1
     # df = remove_correlations(df)
     # df = remove_sparses(df, col_number=2)
     # df = remove_lowcor_with_label(df, 'Label1')
     # df = remove_linears(df, reverse=True)
     # df = df.drop(['F10', 'F12', 'F13', 'F20', 'F27'], axis=1)
             
-    x_df = df.iloc[:, :-1].astype('float32')
-    y_df = df.iloc[:, -1:].astype('int32')
-    
-    y_df = y_df - 1
     return x_df, y_df
 
 x_df, y_df = read_dataset("./Dataset/Train.csv")
-x_test_df, y_test_df = read_dataset("./Dataset/Test.csv")
+x_test_df, y_test_df = read_dataset("./Dataset/Test.csv", withLabel2=True)
 
+df_statistics(y_df)
 df_statistics(y_test_df)
 
 x_df = select_features(x_df, y_df)
@@ -125,14 +128,26 @@ val_acc_per_epoch = history.history['val_sparse_categorical_accuracy']
 best_epoch = val_acc_per_epoch.index(max(val_acc_per_epoch)) + 1
 print('Best epoch: %d' % (best_epoch,))
 
-test_loss, test_accuracy = model.evaluate(x_test_df, y_test_df, verbose=2)
-print('Test loss: {0:.2f}, Test Accuracy: {1:.2f}%'.format(test_loss, test_accuracy*100)) 
+test_loss, test_accuracy = model.evaluate(x_test_df, y_test_df['Label1'], verbose=2)
+print('Test loss and Test Accuracy: {0:.2f}, {1:.2f}%'.format(test_loss, test_accuracy*100))
 
+
+def hamming_accuracy(y_true_df, y_pred):
+    y_true = y_true_df.to_numpy()
+    return np.count_nonzero(y_true==y_pred) / y_true.size
 
 y_pred_raw = model.predict(x_test_df)
 y_pred = np.argmax(y_pred_raw, axis=1)
 y_pred__with_label2 = np.array([[i,1 if i!=6 else 0] for i in y_pred])
-print(y_pred__with_label2)
+y_pred = y_pred__with_label2
+# print(y_pred__with_label2)
+
+hamming_test_accuracy = hamming_accuracy(y_test_df, y_pred)
+hamming_test_loss = 1 - hamming_test_accuracy
+
+print('Hammigng loss and Accuracy: {0:.2f}, {1:.2f}%'.format(hamming_test_loss, hamming_test_accuracy*100))
+
+
 # 1. try without reducing - 0.8072, 0.8094, 0.8058
 # 2. remove correlations - 0.7999, 0.8005, 0.7995
 # 3. remove sparse - 0.8067, 0.8055, 0.8048 ; col_number=2 - 0.8045, 0.8065
