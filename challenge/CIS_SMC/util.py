@@ -141,23 +141,24 @@ def analyze_labels(y_df):
     df_statistics(y_df)
     
 #Training the model 
-# sss = StratifiedShuffleSplit(n_splits=40, test_size=0.2, random_state=0)
-# training = None
-# count= 0
-# for train_index, test_index in sss.split(x, (y_df-1).to_numpy()):
-#     print("iteration", count)
-#     # print("TRAIN:", train_index, "TEST:", test_index)
-#     X_train, X_test = x[train_index], x[test_index]
-#     y_train, y_test = y[train_index], y[test_index]
-#     result = model.fit(X_train, y_train, batch_size = 128, validation_data = (X_test, y_test))
-#     if not training:
-#         training = result
-#     else:
-#         training.history['sparse_categorical_accuracy'].extend(result.history['sparse_categorical_accuracy'])
-#         training.history['val_sparse_categorical_accuracy'].extend(result.history['val_sparse_categorical_accuracy'])
-#         training.history['loss'].extend(result.history['loss'])
-#         training.history['val_loss'].extend(result.history['val_loss'])
-#     count += 1
+def shuffle_dataset(x, y_df, splits=30, test_size=0.2, random_state=0):
+	sss = StratifiedShuffleSplit(n_splits=splits, test_size=test_size, random_state=random_state)
+	training = None
+	count= 0
+	for train_index, test_index in sss.split(x, y_df.to_numpy()):
+		print("iteration", count)
+		X_train, X_test = x[train_index], x[test_index]
+		y_train, y_test = y[train_index], y[test_index]
+		yield X_train, X_test, y_train, y_test
+		# result = model.fit(X_train, y_train, batch_size = 128, validation_data = (X_test, y_test))
+		# if not training:
+			# training = result
+		# else:
+			# training.history['sparse_categorical_accuracy'].extend(result.history['sparse_categorical_accuracy'])
+			# training.history['val_sparse_categorical_accuracy'].extend(result.history['val_sparse_categorical_accuracy'])
+			# training.history['loss'].extend(result.history['loss'])
+			# training.history['val_loss'].extend(result.history['val_loss'])
+		# count += 1
 
 
 

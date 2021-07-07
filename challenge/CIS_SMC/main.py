@@ -120,9 +120,12 @@ The hyperparameter search is complete. Best learning_rate is {best_hps.get('lear
 """)
 
 model = tuner.hypermodel.build(best_hps)
-history = model.fit(X_train, y_train, epochs=50, batch_size=64, validation_data=(X_test, y_test),
-                        callbacks=[tfk.callbacks.EarlyStopping('val_loss', patience=5)])
-visualize(history)
+
+data_generator = util.shuffle_dataset(x, y_df, test_size=0.2)
+for X_train, X_test, y_train, y_test in data_generator:
+    history = model.fit(X_train, y_train, batch_size=64, validation_data=(X_test, y_test),
+                            callbacks=[tfk.callbacks.EarlyStopping('val_loss', patience=3)])
+    visualize(history)
 
 val_acc_per_epoch = history.history['val_sparse_categorical_accuracy']
 best_epoch = val_acc_per_epoch.index(max(val_acc_per_epoch)) + 1
