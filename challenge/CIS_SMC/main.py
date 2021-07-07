@@ -110,13 +110,13 @@ X_train, X_test, y_train, y_test = train_test_split(x, y_df, test_size=0.2, rand
 tuner = Hyperband(
                     build_model,
                     objective='val_sparse_categorical_accuracy',
-                    max_epochs = 10,
+                    max_epochs = 20,
                     factor=3,
                     directory='tuner/{}'.format(datetime.now().timestamp()),
                     )
 
 tuner.search(X_train, y_train, epochs=10, batch_size=64*2, validation_data=(X_test, y_test),
-                        callbacks=[tfk.callbacks.EarlyStopping('val_loss', patience=2)])
+                        callbacks=[tfk.callbacks.EarlyStopping('val_loss', patience=5)])
 
 best_hps=tuner.get_best_hyperparameters(num_trials=1)[0]
 best_model = tuner.get_best_models(num_models=1)[0]
