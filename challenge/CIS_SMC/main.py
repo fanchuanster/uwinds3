@@ -15,6 +15,7 @@ from kerastuner.engine.hyperparameters import HyperParameters
 from sklearn.metrics import hamming_loss
 from datetime import datetime
 from sklearn.datasets import make_classification
+from tensorflow.keras.callbacks import History
 
 # ensure to set current working directory to 'CIS_SMC/'
 from util import *
@@ -56,11 +57,14 @@ def hamming_accuracy(y_true_df, y_pred):
 def build_model(hp):
     model = tfk.Sequential()
     model.add(tfk.layers.Dense(
-        X_train.shape[1]+1,
+        units=hp.Choice("first_layer_units", values=[X_train.shape[1]+1, 2*(X_train.shape[1]+1), 3*(X_train.shape[1]+1)]),
         input_shape=(X_train.shape[1],), 
         activation='relu')
         )
-    # model.add(tfk.layers.Dropout(0.2))
+    model.add(tfk.layers.Dropout(rate=hp.Choice("dropout_rate", values=[0.0, 0.2, 0.4])))
+    for i in range(hp.Int("num_layers", min_value=2, max_value=6, step=2)):
+        model.add(tfk.layers.Dense(hp.Int(f"units_{i}", min_value=32, max_value=108, step=16), 
+                                   activation=hp.Choice(f'activation_{i}', values=['relu', 'tanh'])))
     model.add(tfk.layers.Dense(108, activation='relu'))
     model.add(tfk.layers.Dense(10, activation='softmax'))
     
@@ -75,70 +79,72 @@ def build_model(hp):
     model.summary()
     return model
 
+x_df, y_df = read_dataset("./Dataset/Train.csv")
+x_test_df, y_test_df = read_dataset("./Dataset/Test.csv", withLabel2=True)
+
+# df_statistics(y_df)
+# df_statistics(y_test_df)
+
+x_df = select_features(x_df, y_df)
+x_test_df = x_test_df[x_df.columns]
+
+sc = preprocessing.StandardScaler()
+x = sc.fit_transform(x_df)
+quantile_trans = preprocessing.QuantileTransformer(output_distribution='uniform', random_state=48)
+x = quantile_trans.fit_transform(x)
+normaliztn = preprocessing.Normalizer(norm='l2')
+x = normaliztn.fit_transform(x)
+
+x_test_df = sc.transform(x_test_df)
+x_test_df = quantile_trans.transform(x_test_df)
+x_test_df = normaliztn.transform(x_test_df)
+
+
+# enc = preprocessing.OneHotEncoder()
+# y_df = enc.fit_transform(y_df).toarray()
+
+# df_statistics(x_df)
+# x = preprocessing.normalize(x_df, norm='l2', axis=1, copy=True, return_norm=False)
+
+X_train, X_test, y_train, y_test = train_test_split(x, y_df, test_size=0.2, random_state=0)
+tuner = Hyperband(
+                    build_model,
+                    objective='val_sparse_categorical_accuracy',
+                    max_epochs = 10,
+                    factor=3,
+                    directory='tuner/{}'.format(datetime.now().timestamp()),
+                    )
+
+tuner.search(X_train, y_train, epochs=10, batch_size=64*2, validation_data=(X_test, y_test),
+                        callbacks=[tfk.callbacks.EarlyStopping('val_loss', patience=2)])
+
+best_hps=tuner.get_best_hyperparameters(num_trials=1)[0]
+best_model = tuner.get_best_models(num_models=1)[0]
+best_model.summary()
+print(f"""
+The hyperparameter search is complete. 
+num_layers {best_hps.get('num_layers')}.
+first_layer_units {best_hps.get('first_layer_units')}.
+learning_rate is {best_hps.get('learning_rate')}.
+from_logits {best_hps.get('from_logits')}
+dropout_rate {best_hps.get('dropout_rate')}
+""")
+for i in range(best_hps.get('num_layers')):
+    print(best_hps.get(f'units_{i}'), best_hps.get(f'activation_{i}'))
+
+
 results = []
-for i in range(3):
-    
-    x_df, y_df = read_dataset("./Dataset/Train.csv")
-    x_test_df, y_test_df = read_dataset("./Dataset/Test.csv", withLabel2=True)
-    
-    # df_statistics(y_df)
-    # df_statistics(y_test_df)
-    
-    x_df = select_features(x_df, y_df)
-    x_test_df = x_test_df[x_df.columns]
-    
-    sc = preprocessing.StandardScaler()
-    x = sc.fit_transform(x_df)
-    quantile_trans = preprocessing.QuantileTransformer(output_distribution='uniform', random_state=48)
-    x = quantile_trans.fit_transform(x)
-    normaliztn = preprocessing.Normalizer(norm='l2')
-    x = normaliztn.fit_transform(x)
-    
-    
-    x_test_df = sc.transform(x_test_df)
-    x_test_df = quantile_trans.transform(x_test_df)
-    x_test_df = normaliztn.transform(x_test_df)
-    
-    
-    # enc = preprocessing.OneHotEncoder()
-    # y_df = enc.fit_transform(y_df).toarray()
-    
-    # df_statistics(x_df)
-    # x = preprocessing.normalize(x_df, norm='l2', axis=1, copy=True, return_norm=False)
-    
-    X_train, X_test, y_train, y_test = train_test_split(x, y_df, test_size=0.2, random_state=0)
-    
-    
-    
-    tuner = Hyperband(
-                        build_model,
-                        objective='val_sparse_categorical_accuracy',
-                        max_epochs = 10,
-                        factor=3,
-                        directory='tuner/{}'.format(datetime.now().timestamp()),
-                        )
-    
-    tuner.search(X_train, y_train, epochs=20, batch_size=64*2, validation_data=(X_test, y_test),
-                            callbacks=[tfk.callbacks.EarlyStopping('val_loss', patience=5)])
-    
-    best_hps=tuner.get_best_hyperparameters(num_trials=1)[0]
-    print(f"""
-    The hyperparameter search is complete. 
-    learning_rate is {best_hps.get('learning_rate')}.
-    from_logits {best_hps.get('from_logits')}
-    """)
-    
+for i in range(10):
+ 
     model = tuner.hypermodel.build(best_hps)
     
-    data_generator = shuffle_dataset(x, y_df, splits=40, test_size=0.2)
+    history = History()
+    data_generator = shuffle_dataset(x, y_df, splits=2, test_size=0.2)
     for X_train, X_test, y_train, y_test in data_generator:
-        history = model.fit(X_train, y_train, batch_size=64*2, validation_data=(X_test, y_test))
-        # callbacks=[tfk.callbacks.EarlyStopping('val_loss', patience=3)]
-        # visualize(history)
-    
-    val_acc_per_epoch = history.history['val_sparse_categorical_accuracy']
-    best_epoch = val_acc_per_epoch.index(max(val_acc_per_epoch)) + 1
-    print('Best epoch: %d' % best_epoch)
+        model.fit(X_train, y_train, epochs=20, batch_size=64*2, validation_data=(X_test, y_test),
+                            shuffle=True,
+                            callbacks=[tfk.callbacks.EarlyStopping('val_loss', patience=5), history])
+    visualize(history)
     
     test_loss, test_accuracy = model.evaluate(x_test_df, y_test_df['Label1'], verbose=2)
     print('Exact match loss and Accuracy: {0:.2f} {1:.2f}%'.format(test_loss, test_accuracy*100))
@@ -147,16 +153,21 @@ for i in range(3):
     y_pred = np.argmax(y_pred_raw, axis=1)
     y_pred__with_label2 = np.array([[i,1 if i!=6 else 0] for i in y_pred])
     y_pred = y_pred__with_label2
-    # print(y_pred__with_label2)
     
     hamming_test_accuracy = hamming_accuracy(y_test_df, y_pred)
     hamming_test_loss = 1 - hamming_test_accuracy
     
     print('Hammigng loss and Accuracy {0:.2f} {1:.2f}%'.format(hamming_test_loss, hamming_test_accuracy*100))
+    
     results.append((test_loss, test_accuracy, hamming_test_loss, hamming_test_accuracy))
     
-for r in results:
-    print(r)
+arr = np.array(results)
+std_variation = np.std(arr, axis=0)
+mean = np.mean(arr, axis=0)
+
+print(results)
+print("std_variation", std_variation)
+print("mean", mean)
 
 
 # 1. try without reducing - 0.8072, 0.8094, 0.8058
