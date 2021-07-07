@@ -49,6 +49,10 @@ def read_dataset(filename, withLabel2=False):
             
     return x_df, y_df
 
+def hamming_accuracy(y_true_df, y_pred):
+    y_true = y_true_df.to_numpy()
+    return np.count_nonzero(y_true==y_pred) / y_true.size
+    
 def build_model(hp):
     model = tfk.Sequential()
     model.add(tfk.layers.Dense(
@@ -60,11 +64,10 @@ def build_model(hp):
     model.add(tfk.layers.Dense(108, activation='relu'))
     model.add(tfk.layers.Dense(10, activation='softmax'))
     
-    # optimizer=tfk.optimizers.Adam(hp.Choice("learning_rate", values=[1e-2, 1e-3, 1e-4])),
     model.compile(
                     optimizer=tfk.optimizers.Adam(learning_rate=hp.Choice("learning_rate", values=[1e-2, 1e-3, 1e-4])),
                     # loss='sparse_categorical_crossentropy',
-                    loss=tfk.losses.SparseCategoricalCrossentropy(from_logits=True),
+                    loss=tfk.losses.SparseCategoricalCrossentropy(from_logits=hp.Choice("from_logits", values=[True, False])),
                     # loss='categorical_crossentropy',
                     metrics=['sparse_categorical_accuracy'],
                     # metrics=['categorical_accuracy']
@@ -73,7 +76,7 @@ def build_model(hp):
     return model
 
 results = []
-for i in range(10):
+for i in range(3):
     
     x_df, y_df = read_dataset("./Dataset/Train.csv")
     x_test_df, y_test_df = read_dataset("./Dataset/Test.csv", withLabel2=True)
@@ -83,7 +86,6 @@ for i in range(10):
     
     x_df = select_features(x_df, y_df)
     x_test_df = x_test_df[x_df.columns]
-    # x = select_kbest(x, np.ravel(y_df), k='all')
     
     sc = preprocessing.StandardScaler()
     x = sc.fit_transform(x_df)
@@ -116,19 +118,21 @@ for i in range(10):
                         directory='tuner/{}'.format(datetime.now().timestamp()),
                         )
     
-    tuner.search(X_train, y_train, epochs=20, batch_size=64, validation_data=(X_test, y_test),
+    tuner.search(X_train, y_train, epochs=20, batch_size=64*2, validation_data=(X_test, y_test),
                             callbacks=[tfk.callbacks.EarlyStopping('val_loss', patience=5)])
     
     best_hps=tuner.get_best_hyperparameters(num_trials=1)[0]
     print(f"""
-    The hyperparameter search is complete. Best learning_rate is {best_hps.get('learning_rate')}.
+    The hyperparameter search is complete. 
+    learning_rate is {best_hps.get('learning_rate')}.
+    from_logits {best_hps.get('from_logits')}
     """)
     
     model = tuner.hypermodel.build(best_hps)
     
     data_generator = shuffle_dataset(x, y_df, splits=40, test_size=0.2)
     for X_train, X_test, y_train, y_test in data_generator:
-        history = model.fit(X_train, y_train, batch_size=64, validation_data=(X_test, y_test))
+        history = model.fit(X_train, y_train, batch_size=64*2, validation_data=(X_test, y_test))
         # callbacks=[tfk.callbacks.EarlyStopping('val_loss', patience=3)]
         # visualize(history)
     
@@ -137,12 +141,7 @@ for i in range(10):
     print('Best epoch: %d' % best_epoch)
     
     test_loss, test_accuracy = model.evaluate(x_test_df, y_test_df['Label1'], verbose=2)
-    print('Test loss and Test Accuracy: {0:.2f} {1:.2f}%'.format(test_loss, test_accuracy*100))
-    
-    
-    def hamming_accuracy(y_true_df, y_pred):
-        y_true = y_true_df.to_numpy()
-        return np.count_nonzero(y_true==y_pred) / y_true.size
+    print('Exact match loss and Accuracy: {0:.2f} {1:.2f}%'.format(test_loss, test_accuracy*100))
     
     y_pred_raw = model.predict(x_test_df)
     y_pred = np.argmax(y_pred_raw, axis=1)
