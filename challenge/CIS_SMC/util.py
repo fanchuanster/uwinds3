@@ -145,8 +145,9 @@ def shuffle_dataset(x, y_df, splits=30, test_size=0.2, random_state=0):
 	sss = StratifiedShuffleSplit(n_splits=splits, test_size=test_size, random_state=random_state)
 	training = None
 	count= 0
-	for train_index, test_index in sss.split(x, y_df.to_numpy()):
-		print("iteration", count)
+	y = y_df.to_numpy()
+	for train_index, test_index in sss.split(x, y):
+		# print("iteration", count)
 		X_train, X_test = x[train_index], x[test_index]
 		y_train, y_test = y[train_index], y[test_index]
 		yield X_train, X_test, y_train, y_test
