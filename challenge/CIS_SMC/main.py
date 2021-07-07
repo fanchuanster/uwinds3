@@ -153,7 +153,7 @@ for i in range(10):
     hamming_test_accuracy = hamming_accuracy(y_test_df, y_pred)
     hamming_test_loss = 1 - hamming_test_accuracy
     
-    print('Hammigng loss and Accuracy @iteration{}: {0:.2f} {1:.2f}%'.format(i, hamming_test_loss, hamming_test_accuracy*100))
+    print('Hammigng loss and Accuracy {0:.2f} {1:.2f}%'.format(hamming_test_loss, hamming_test_accuracy*100))
     results.append((test_loss, test_accuracy, hamming_test_loss, hamming_test_accuracy))
     
 for r in results:
