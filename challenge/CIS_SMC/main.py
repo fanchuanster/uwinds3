@@ -99,12 +99,10 @@ x_test_df = sc.transform(x_test_df)
 x_test_df = quantile_trans.transform(x_test_df)
 x_test_df = normaliztn.transform(x_test_df)
 
-
 # enc = preprocessing.OneHotEncoder()
 # y_df = enc.fit_transform(y_df).toarray()
 
 # df_statistics(x_df)
-# x = preprocessing.normalize(x_df, norm='l2', axis=1, copy=True, return_norm=False)
 
 X_train, X_test, y_train, y_test = train_test_split(x, y_df, test_size=0.2, random_state=0)
 tuner = Hyperband(
@@ -115,7 +113,7 @@ tuner = Hyperband(
                     directory='tuner/{}'.format(datetime.now().timestamp()),
                     )
 
-tuner.search(X_train, y_train, epochs=10, batch_size=64*2, validation_data=(X_test, y_test),
+tuner.search(X_train, y_train, epochs=20, batch_size=64*2, validation_data=(X_test, y_test),
                         callbacks=[tfk.callbacks.EarlyStopping('val_loss', patience=5)])
 
 best_hps=tuner.get_best_hyperparameters(num_trials=1)[0]
@@ -143,7 +141,7 @@ for i in range(10):
     history = History()
     data_generator = shuffle_dataset(x, y_df, splits=2, test_size=0.2)
     for X_train, X_test, y_train, y_test in data_generator:
-        model.fit(X_train, y_train, epochs=20, batch_size=64*2, validation_data=(X_test, y_test),
+        model.fit(X_train, y_train, epochs=24, batch_size=64*2, validation_data=(X_test, y_test),
                             shuffle=True,
                             callbacks=[tfk.callbacks.EarlyStopping('val_loss', patience=5), history])
     visualize(history)
@@ -203,5 +201,3 @@ y_pred_df.to_csv("predictions.csv", sep=",")
 # 5. try activation different
 # 6. try more epochs
 
-
-# visualize(training)
