@@ -42,7 +42,6 @@ def read_dataset(filename, withLabel2=False):
         x_df = df.iloc[:, :-2].astype('float32')
         y_df = df.iloc[:, -2:].astype('int32')
     y_df['Label1'] = y_df['Label1'] - 1
-    # df = remove_correlations(df)
     # df = remove_sparses(df, col_number=2)
     # df = remove_lowcor_with_label(df, 'Label1')
     # df = remove_linears(df, reverse=True)
@@ -86,6 +85,7 @@ x_test_df, y_test_df = read_dataset("./Dataset/Test.csv", withLabel2=True)
 # df_statistics(y_test_df)
 
 x_df = select_features(x_df, y_df)
+x_df = remove_correlations(x_df)
 x_test_df = x_test_df[x_df.columns]
 
 sc = preprocessing.StandardScaler()
@@ -134,6 +134,8 @@ for i in range(best_hps.get('num_layers')):
 
 
 results = []
+best_model = None
+best_acc = 0.0
 for i in range(10):
  
     model = tuner.hypermodel.build(best_hps)
@@ -160,6 +162,9 @@ for i in range(10):
     print('Hammigng loss and Accuracy {0:.2f} {1:.2f}%'.format(hamming_test_loss, hamming_test_accuracy*100))
     
     results.append((test_loss, test_accuracy, hamming_test_loss, hamming_test_accuracy))
+    if hamming_test_accuracy > best_acc:
+        best_model = model
+        best_acc = hamming_test_accuracy
     
 arr = np.array(results)
 std_variation = np.std(arr, axis=0)
@@ -168,6 +173,15 @@ mean = np.mean(arr, axis=0)
 print(results)
 print("std_variation", std_variation)
 print("mean", mean)
+
+y_pred_raw = best_model.predict(x_test_df)
+y_pred = np.argmax(y_pred_raw, axis=1)
+y_pred__with_label2 = np.array([[i,1 if i!=6 else 0] for i in y_pred])
+y_pred = y_pred__with_label2
+hamming_test_accuracy = hamming_accuracy(y_test_df, y_pred)
+y_pred_df = pd.DataFrame(y_pred, columns=['Label1', 'Label2'])
+y_pred_df['Label1'] = y_pred_df['Label1'] + 1
+y_pred_df.to_csv("predictions.csv", sep=",")
 
 
 # 1. try without reducing - 0.8072, 0.8094, 0.8058
