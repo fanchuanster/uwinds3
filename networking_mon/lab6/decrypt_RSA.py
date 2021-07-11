@@ -5,8 +5,8 @@ from Crypto.PublicKey import RSA
 
 ciphertext = open('ciphertext.bin', 'rb').read()
 
-key_str = open('Test.key').read()
-prikey = RSA.import_key(key_str, passphrase='dees')
+key_str = open('private.pem').read()
+prikey = RSA.importKey(key_str, passphrase='111111')
 cipher = PKCS1_OAEP.new(prikey)
 message = cipher.decrypt(ciphertext)
 print(message)
