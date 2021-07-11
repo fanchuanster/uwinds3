@@ -5,7 +5,7 @@ from Crypto.PublicKey import RSA
 
 message=input("input the message you would like to encrypt:")
 
-key=RSA.import_key(open('public.pem').read())
+key=RSA.importKey(open('public.pem').read())
 print(key)
 
 
