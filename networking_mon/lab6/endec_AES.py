@@ -1,19 +1,10 @@
 #!/usr/bin/python3
 
 from Crypto.Cipher import AES
-from Crypto.PublicKey import RSA
-from Crypto.Cipher import PKCS1_OAEP
 from Crypto.Util import Padding
 from Crypto.Random import get_random_bytes
 
 import binascii
-
-def encryptRSA(message, keyfile):
-    key=RSA.importKey(open(keyfile).read())
-
-    cipher=PKCS1_OAEP.new(key)
-
-    ciphertext=cipher.encrypt(message)
 
 key_hex_string = '00112233445566778899AABBCCDDEEFF00112233445566778899AABBCCDDEEFF'
 key = bytearray.fromhex(key_hex_string)
