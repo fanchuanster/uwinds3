@@ -27,7 +27,7 @@ key = bytearray.fromhex(key_hex_string)
 
 # a.
 iv = get_random_bytes(16)
-print("sk - {}".format(iv))
+print("sk - {}".format(binascii.hexlify(bytearray(iv))))
 
 # b.
 c1 = encryptRSA(iv, "public.pem")
