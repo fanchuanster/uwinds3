@@ -18,7 +18,7 @@ key = bytearray.fromhex(key_hex_string)
 iv = get_random_bytes(16)
 
 data = b'I find the solution for P not equal NP'
-print(data)
+print(data.decode())
 
 # Encrypt the entire data
 cipher = AES.new(key, AES.MODE_CBC, iv)
