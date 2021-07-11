@@ -6,7 +6,6 @@ from Crypto.PublicKey import RSA
 message=str.encode(input("input the message you would like to encrypt:"))
 
 key=RSA.importKey(open('public.pem').read())
-print(key)
 
 
 cipher=PKCS1_OAEP.new(key)
