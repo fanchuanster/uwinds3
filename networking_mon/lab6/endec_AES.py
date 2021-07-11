@@ -14,7 +14,7 @@ def encryptRSA(message, keyfile):
     ciphertext=cipher.encrypt(message)
 
 key_hex_string = '00112233445566778899AABBCCDDEEFF00112233445566778899AABBCCDDEEFF'
-key = str.encode(key_hex_string)
+key = bytearray.fromhex(key_hex_string)
 iv = get_random_bytes(16)
 
 data = b'I find the solution for P not equal NP'
