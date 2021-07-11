@@ -18,12 +18,12 @@ key = str.encode(key_hex_string)
 iv = encryptRSA(get_random_bytes(16), 'public.pem')
 
 data = b'I find the solution for P not equal NP'
-print(data.hex())
+print(data)
 
 # Encrypt the entire data
 cipher = AES.new(key, AES.MODE_CBC, iv)
 ciphertext = cipher.encrypt(Padding.pad(data, 16))
-print("Ciphertext: {0}\n".format(ciphertext.hex()))
+print("Ciphertext: {0}\n".format(ciphertext))
 
 # Decrypt the ciphertext
 cipher = AES.new(key, AES.MODE_CBC, iv)
