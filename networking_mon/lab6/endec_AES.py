@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 from Crypto.Cipher import AES
+from Crypto.PublicKey import RSA
 from Crypto.Util import Padding
 from Crypto.Random import get_random_bytes
 
