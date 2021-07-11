@@ -6,6 +6,8 @@ from Crypto.Cipher import PKCS1_OAEP
 from Crypto.Util import Padding
 from Crypto.Random import get_random_bytes
 
+import binascii
+
 def encryptRSA(message, keyfile):
     key=RSA.importKey(open(keyfile).read())
 
@@ -23,7 +25,8 @@ print(data.decode())
 # Encrypt the entire data
 cipher = AES.new(key, AES.MODE_CBC, iv)
 ciphertext = cipher.encrypt(Padding.pad(data, 16))
-print("Ciphertext: {0}\n".format(ciphertext.decode()))
+print("Ciphertext: {0}\n".format(binascii.hexlify(bytearray(ciphertext))))
+
 
 # Decrypt the ciphertext
 cipher = AES.new(key, AES.MODE_CBC, iv)
