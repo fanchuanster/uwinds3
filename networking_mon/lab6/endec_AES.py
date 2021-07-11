@@ -12,6 +12,7 @@ def encryptRSA(message, keyfile):
     key=RSA.importKey(open(keyfile).read())
     cipher=PKCS1_OAEP.new(key)
     ciphertext=cipher.encrypt(message)
+    return ciphertext
 
 def decryptRSA(ciphertext, privatekeyfile):
     key_str = open(privatekeyfile).read()
