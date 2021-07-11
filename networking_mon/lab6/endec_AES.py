@@ -46,5 +46,5 @@ print("decrypted c1 - {}".format(binascii.hexlify(bytearray(decrpted_message))))
 # Decrypt the ciphertext
 cipher = AES.new(key, AES.MODE_CBC, iv)
 plaintext = cipher.decrypt(c2)
-print("Plaintext c2 {0}".format(Padding.unpad(plaintext, 16)))
+print("Plaintext c2 - {0}".format(Padding.unpad(plaintext, 16)))
 
