@@ -23,7 +23,7 @@ print(data)
 # Encrypt the entire data
 cipher = AES.new(key, AES.MODE_CBC, iv)
 ciphertext = cipher.encrypt(Padding.pad(data, 16))
-print("Ciphertext: {0}\n".format(ciphertext))
+print("Ciphertext: {0}\n".format(ciphertext.hex()))
 
 # Decrypt the ciphertext
 cipher = AES.new(key, AES.MODE_CBC, iv)
