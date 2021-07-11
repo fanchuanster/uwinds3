@@ -25,7 +25,7 @@ key_hex_string = '00112233445566778899AABBCCDDEEFF00112233445566778899AABBCCDDEE
 key = bytearray.fromhex(key_hex_string)
 
 # a.
-iv = get_random_bytes(32)
+iv = get_random_bytes(16)
 
 # b.
 c1 = encryptRSA(iv, "public.pem")
