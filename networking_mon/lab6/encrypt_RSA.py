@@ -3,7 +3,7 @@
 from Crypto.Cipher import PKCS1_OAEP
 from Crypto.PublicKey import RSA
 
-message=input("input the message you would like to encrypt:")
+message=str.encode(input("input the message you would like to encrypt:"))
 
 key=RSA.importKey(open('public.pem').read())
 print(key)
