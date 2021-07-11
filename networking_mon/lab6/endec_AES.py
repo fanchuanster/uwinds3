@@ -31,7 +31,7 @@ print("sk - {}".format(binascii.hexlify(bytearray(iv))))
 
 # b.
 c1 = encryptRSA(iv, "public.pem")
-print("c1 - {}".format(c1))
+print("c1 - {}".format(binascii.hexlify(bytearray(c1))))
 
 data = b'I find the solution for P not equal NP'
 
