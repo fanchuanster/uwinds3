@@ -43,7 +43,7 @@ print("c2: {0}\n".format(binascii.hexlify(bytearray(c2))))
 
 # d.
 decrpted_message = decryptRSA(c1, "private.pem")
-print("decrypted c1", decrpted_message.decode())
+print("decrypted c1", binascii.hexlify(bytearray(decrpted_message)))
 
 # Decrypt the ciphertext
 cipher = AES.new(key, AES.MODE_CBC, iv)
