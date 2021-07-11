@@ -27,9 +27,11 @@ key = bytearray.fromhex(key_hex_string)
 
 # a.
 iv = get_random_bytes(16)
+print("sk - {}".format(iv))
 
 # b.
 c1 = encryptRSA(iv, "public.pem")
+print("c1 - {}".format(c1))
 
 data = b'I find the solution for P not equal NP'
 
@@ -41,10 +43,10 @@ print("c2: {0}\n".format(binascii.hexlify(bytearray(c2))))
 
 # d.
 decrpted_message = decryptRSA(c1, "private.pem")
-print("decrypted c1 - {}".format(binascii.hexlify(bytearray(decrpted_message))))
+print("decrypted c1 (sk) - {}".format(binascii.hexlify(bytearray(decrpted_message))))
 
 # Decrypt the ciphertext
 cipher = AES.new(key, AES.MODE_CBC, iv)
 plaintext = cipher.decrypt(c2)
-print("Plaintext c2 - {0}".format(Padding.unpad(plaintext, 16)))
+print("decrypted msg - {0}".format(Padding.unpad(plaintext, 16)))
 
