@@ -12,7 +12,7 @@ def encryptRSA(message, keyfile):
     ciphertext=cipher.encrypt(message)
 
 key_hex_string = '00112233445566778899AABBCCDDEEFF00112233445566778899AABBCCDDEEFF'
-key = bytes.fromhex(key_hex_string)
+key = str.encode(key_hex_string)
 iv = encryptRSA(get_random_bytes(16), 'public.pem')
 
 data = b'I find the solution for P not equal NP'
