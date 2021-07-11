@@ -17,6 +17,7 @@ def decryptRSA(ciphertext, privatekeyfile):
     key_str = open(privatekeyfile).read()
     prikey = RSA.importKey(key_str, passphrase='111111')
     cipher = PKCS1_OAEP.new(prikey)
+    print("ciphertext {}".format(ciphertext))
     message = cipher.decrypt(ciphertext)
     return message
 
