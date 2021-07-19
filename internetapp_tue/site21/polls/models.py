@@ -20,6 +20,7 @@ class Course(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     for_everyone = models.BooleanField(default=True)
     description = models.TextField(blank=True)
+    num_reviews = models.PositiveIntegerField(default=0)
 
 class Student(User):
     LVL_CHOICES = [
@@ -30,7 +31,7 @@ class Student(User):
     ]
 
     def __str__(self):
-        return f"student {super().__str__()}"
+        return f"{super().__str__()}"
     level = models.CharField(choices=LVL_CHOICES, max_length=2, default='HS')
     address = models.CharField(max_length=300, blank=True)
     province=models.CharField(max_length=2, default='ON')
@@ -51,3 +52,13 @@ class Order(models.Model):
     student = models.ForeignKey(Student, related_name='student', on_delete=models.CASCADE)
     order_status = models.BigIntegerField(choices=ORDER_STATUSES, default=1)
     order_date = models.DateTimeField(default=datetime.now(), blank=True)
+
+class Review(models.Model):
+    def __str__(self):
+        return f"rating {self.rating} by {self.reviewer} on {self.date}"
+    reviewer = models.EmailField()
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    rating = models.PositiveIntegerField()
+    comments = models.TextField(blank=True)
+    date = models.DateField(default=timezone.now())
+    datetime = models.DateTimeField(default=timezone.datetime.now())

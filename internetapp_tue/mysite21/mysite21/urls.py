@@ -1,4 +1,4 @@
-"""site21 URL Configuration
+"""mysite21 URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/3.2/topics/http/urls/
@@ -15,16 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from polls import views
 
-app_name="polls"
 urlpatterns = [
-    path(r'', views.index, name='index'),
-    # the path should not prefixed with /
-    # path('student/<int:student_id>/', views.student_details, name='student_details')
-    path('about/', views.about, name='about1'),
-    path('<int:topic_id>/', views.detail, name='detail'),
-    path('findcourses', views.findcourses, name='findcourses'),
-    path('place_order', views.place_order, name='placeorder'),
-    path('review', views.review_course, name='reviewcourse')
+    path('admin/', admin.site.urls),
 ]

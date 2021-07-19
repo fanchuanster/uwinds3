@@ -1,6 +1,6 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .forms import SearchForm
+from .forms import SearchForm, OrderForm, ReviewForm
 from django.http import Http404
 from .models import Student, Topic, Course
 from django.shortcuts import get_object_or_404
@@ -51,3 +51,39 @@ def student_details(request, student_id):
     return render(request, 'student_detail.html', {
         'student': student
     })
+
+def place_order(request):
+    if request.method == 'POST':
+        form = OrderForm(request.POST)
+        if form.is_valid():
+            courses = form.cleaned_data['courses']
+            order = form.save(commit=True)
+            student = order.student
+            status = order.order_status
+            order.save()
+            if status == 1:
+                for c in order.courses.all():
+                    student.registered_courses.add(c)
+                student.save()
+            return render(request, 'polls/order_response.html', {'courses':courses, 'order':order})
+        else:
+            return render(request, 'polls/place_order.html', {'form':form})
+    else:
+        form = OrderForm()
+        return render(request, 'polls/place_order.html', {'form':form})
+
+def review_course(request):
+    if request.method == 'POST':
+        form = ReviewForm(request.POST)
+        if form.is_valid():
+            form.save()
+            course = form.cleaned_data['course']
+            course.num_reviews += 1
+            course.save()
+            response = redirect('/myapp')
+            return response
+        else:
+            return render(request, 'polls/reviewcourse.html', {'form': form})
+    else:
+        form = ReviewForm()
+        return render(request, 'polls/reviewcourse.html', {'form':form})
