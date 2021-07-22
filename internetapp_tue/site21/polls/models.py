@@ -44,6 +44,8 @@ class Order(models.Model):
         (1, 'Confirmed'),
         (2, 'On Hold')
     ]
+    def total_items(self):
+        return len(self.courses.all())
     def total_cost(self):
         return sum([course.price for course in self.courses.all()])
     def __str__(self):
