@@ -10,6 +10,8 @@
     {% else %}
         <strong>There are no available topics!</strong>
     {% endif %}
+    <br>
+    <div>{{ last_login }}</div>
     <p><a href="{% url 'polls:about1' %}">About Page</a></p>
     <p><a href="{% url 'polls:placeorder' %}">Place Order</a></p>
 {% endblock %}

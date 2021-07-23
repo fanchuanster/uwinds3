@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.shortcuts import render, redirect, reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from .forms import SearchForm, OrderForm, ReviewForm, LoginForm
@@ -17,6 +19,8 @@ def myaccount(request):
         return redirect('/myapp/user_login')
 
 def user_login(request):
+    if request.user.is_authenticated:
+        print('the user is authenticated')
     if request.method == 'POST':
         form = LoginForm(request.POST)
         username = request.POST.get('username', '')
@@ -24,7 +28,9 @@ def user_login(request):
         user = authenticate(username=username, password=password)
         if user:
             if user.is_active:
+                request.session.set_expiry(60)
                 login(request, user)
+                request.session['last_login'] = datetime.now()
                 return HttpResponseRedirect(reverse('polls:index'))
         form.errors = True
         return render(request, 'registration/login.html', {'form': form})
@@ -58,11 +64,22 @@ def findcourses(request):
 
 def index(request):
     top_list = Topic.objects.all().order_by('id')[:10]
+    last_login = request.session.get('last_login')
+    if not last_login:
+        last_login = 'Your las login was more than a minute ago'
     setattr(request, 'view', 'index')
-    return render(request, 'polls/index.html', {'top_list': top_list})
+    return render(request, 'polls/index.html', {'top_list': top_list, 'last_login': last_login})
 
 def about(request):
-    return render(request, 'polls/about.html')
+    value = request.COOKIES.get('about_visits')
+    if value is None:
+        about_visits = 0
+    else:
+        about_visits = int(value)
+    about_visits += 1
+    response = render(request, 'polls/about.html', {'about_visits': about_visits})
+    response.set_cookie('about_visits', about_visits, expires=5*60)
+    return response
 
 def detail(request, topic_id):
     topic = get_object_or_404(Topic, id=topic_id)
