@@ -10,7 +10,6 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 def myaccount(request):
     if request.user.is_authenticated:
         student = Student.objects.get(username=request.user)
-        print(student.registered_courses.all())
         return render(request, 'registration/myaccount.html', {
             'isstudent': student,
             'user': student})
