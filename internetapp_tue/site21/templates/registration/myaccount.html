@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block body_block %}
+
+    {% if isstudent %}
+        <div>
+        {{ user.first_name }}, {{ user.last_name }}
+        <br>
+        <br>
+            <div><strong>Interested courses</strong></div>
+        {% for topic in user.interested_in.all %}
+            {{ topic.name }}
+        {% endfor %}
+        <br>
+        <br>
+        <div><strong>Registered courses</strong></div>
+        {% for course in user.registered_courses.all %}
+            {{ course.title }}
+        {% endfor %}
+        </div>
+    {% else %}
+        <div><p>You are not a registered student!</p></div>
+    {% endif %}
+
+{% endblock %}

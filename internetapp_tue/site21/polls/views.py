@@ -1,9 +1,41 @@
-from django.shortcuts import render, redirect
-from django.http import HttpResponse
-from .forms import SearchForm, OrderForm, ReviewForm
+from django.shortcuts import render, redirect, reverse
+from django.http import HttpResponse, HttpResponseRedirect
+from .forms import SearchForm, OrderForm, ReviewForm, LoginForm
 from django.http import Http404
 from .models import Student, Topic, Course
 from django.shortcuts import get_object_or_404
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required, user_passes_test
+
+def myaccount(request):
+    if request.user.is_authenticated:
+        student = Student.objects.get(username=request.user)
+        print(student.registered_courses.all())
+        return render(request, 'registration/myaccount.html', {
+            'isstudent': student,
+            'user': student})
+    else:
+        return redirect('/myapp/user_login')
+
+def user_login(request):
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        username = request.POST.get('username', '')
+        password = request.POST.get('password', '')
+        user = authenticate(username=username, password=password)
+        if user:
+            if user.is_active:
+                login(request, user)
+                return HttpResponseRedirect(reverse('polls:index'))
+        form.errors = True
+        return render(request, 'registration/login.html', {'form': form})
+    else:
+        return render(request, 'registration/login.html', {'form':LoginForm()})
+
+@login_required
+def user_logout(request):
+    logout(request)
+    return HttpResponseRedirect(reverse('polls:index'))
 
 def findcourses(request):
     if request.method == 'POST':

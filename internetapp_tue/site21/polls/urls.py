@@ -26,5 +26,7 @@ urlpatterns = [
     path('<int:topic_id>/', views.detail, name='detail'),
     path('findcourses', views.findcourses, name='findcourses'),
     path('place_order', views.place_order, name='placeorder'),
-    path('review', views.review_course, name='reviewcourse')
+    path('review', views.review_course, name='reviewcourse'),
+    path('user_login', views.user_login, name='user_login'),
+    path('myaccount/', views.myaccount, name='myaccount'),
 ]

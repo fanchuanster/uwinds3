@@ -3,6 +3,11 @@ from django.core.validators import MinValueValidator
 from polls.models import Order, Review
 from django.core.exceptions import ValidationError
 
+class LoginForm(forms.Form):
+    username = forms.CharField(max_length=100, required=True, label='User Name')
+    password = forms.CharField(widget=forms.PasswordInput)
+    errors = False
+
 class SearchForm(forms.Form):
     LENGTH_CHOICES = [
         (8, '8 Weeks'),
