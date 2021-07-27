@@ -9,14 +9,12 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
 
+@login_required
 def myaccount(request):
-    if request.user.is_authenticated:
-        student = Student.objects.get(username=request.user)
-        return render(request, 'registration/myaccount.html', {
-            'isstudent': student,
-            'user': student})
-    else:
-        return redirect('/myapp/user_login')
+    student = Student.objects.get(username=request.user)
+    return render(request, 'registration/myaccount.html', {
+        'isstudent': student,
+        'user': student})
 
 def user_login(request):
     if request.user.is_authenticated:
