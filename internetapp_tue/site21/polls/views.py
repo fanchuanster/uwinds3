@@ -66,7 +66,7 @@ def index(request):
     if not last_login:
         last_login = 'Your las login was more than a minute ago'
     setattr(request, 'view', 'index')
-    return render(request, 'polls/index.html', {'top_list': top_list, 'last_login': last_login})
+    return render(request, 'polls/index.html', {'top_list': top_list, 'last_login': "Your las login:" + str(last_login)})
 
 def about(request):
     value = request.COOKIES.get('about_visits')

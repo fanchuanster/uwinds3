@@ -33,7 +33,13 @@
         <br/>
     </li>
     </ul>
+        {% if user.is_authenticated %}
+            <p><a href="{% url 'polls:user_logout' %}">Logout</a></p>
+        {% else %}
+            <p><a href="{% url 'polls:user_login' %}">Login</a></p>
+        {% endif %}
     </div>
+
 
 </body>
 </html>

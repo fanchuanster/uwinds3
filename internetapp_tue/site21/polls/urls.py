@@ -28,5 +28,6 @@ urlpatterns = [
     path('place_order', views.place_order, name='placeorder'),
     path('review', views.review_course, name='reviewcourse'),
     path('user_login', views.user_login, name='user_login'),
+    path('user_logout', views.user_logout, name='user_logout'),
     path('myaccount/', views.myaccount, name='myaccount'),
 ]
