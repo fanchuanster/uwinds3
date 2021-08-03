@@ -1,0 +1,27 @@
+1. distributed database (ledger)
+2. difficult to tamper with
+3. block - hash, hash of previous, data
+4. stored in peers.
+
+5. smart contract - program automatically transfer money between accounts on predefined conditions.
+
+6. proof of work - find a number that is to complement the data to achieve a hash beginning with 30 zeros
+7. ledger stored in accross all node.
+
+
+finance and banking
+1. cryptocurrency, bitcoin - transaction secure due to distributed & decentralized
+2. no arbitary change 
+3. no impersonation is possible
+
+
+security and privacy
+1. anti-attack as no central server, single point of failure free
+2. ananymous
+*3. criminal
+
+
+challenge
+1. expensive - hardware, electricity
+2. anonymous
+3. social reason to adopt from existing system
