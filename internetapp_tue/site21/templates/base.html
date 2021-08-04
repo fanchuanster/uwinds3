@@ -2,44 +2,54 @@
 {% load static %}
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="{% static 'myapp/style.css' %}" />
+<link rel="stylesheet" type="text/css" href="{%  static 'myapp/style.css' %}" />
 <title>E-Learning WebApp - {% block title %}Welcome!{% endblock %}</title>
 </head>
 <body>
-<div>
-<h1>
-    {% block myhdg %}Hello
-        {% if user.is_authenticated %}
-            {{ user.username }}
-        {% else %}
-            Anonymous User.
-        {% endif %}
-        {% endblock %}
-</h1>
-    {% block body_block %}*** {% endblock %}
-</div>
-
-    <hr />
-    <div>
-    <ul>
-        {% if request.view != "index" %}
-    <li class="hbar1">
-        <a href = "{% url 'polls:index' %}">Click here to return to main page</a>
-        <br/>
-    </li>
-        {% endif %}
-    <li class="hbar1">
-        <a href = "{% url 'polls:findcourses' %}">Click here to search courses</a>
-        <br/>
-    </li>
-    </ul>
-        {% if user.is_authenticated %}
-            <p><a href="{% url 'polls:user_logout' %}">Logout</a></p>
-        {% else %}
-            <p><a href="{% url 'polls:user_login' %}">Login</a></p>
-        {% endif %}
+    <div id="header">
+        <h1>
+            {% block myhdg %}Hello
+                {% if user.is_authenticated %}
+                    {{ user.username }}
+                {% else %}
+                    Anonymous User.
+                {% endif %}
+                {% endblock %}
+        </h1>
     </div>
 
+    <div id="content">
+        {% block body_block %}*** {% endblock %}
+    </div>
 
+    <div id="footer">
+        <ul>
+        {% if request.view != "index" %}
+        <li>
+            <a href = "{% url 'polls:index' %}">Home</a>
+        </li>
+        {% endif %}
+
+        <li>
+            <a href = "{% url 'polls:findcourses' %}">Search Courses</a>
+        </li>
+        <li>
+            <a href="{% url 'polls:placeorder' %}">Place Order</a>
+        </li>
+
+        <li>
+            {% if user.is_authenticated %}
+                <a href="{% url 'polls:user_logout' %}">Logout</a>
+            {% else %}
+                <a href="{% url 'polls:user_login' %}">Login</a>
+            {% endif %}
+        </li>
+
+        <li>
+            <a href="{% url 'polls:about1' %}">About</a>
+        </li>
+
+    </ul>
+    </div>
 </body>
 </html>
