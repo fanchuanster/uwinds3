@@ -15,9 +15,16 @@ class Topic(models.Model):
 class Course(models.Model):
     def __str__(self):
         return f"{self.title}"
+    def get_hours(self):
+        return self.topic.length if self.hours == 0 else self.hours
+    def add_hours(self, increment):
+        current_hours = self.get_hours()
+        self.hours = current_hours + increment
+        self.save()
     title = models.CharField(max_length=200)
     topic = models.ForeignKey(Topic, related_name='courses', on_delete=models.CASCADE)
     price = models.DecimalField(max_digits=10, decimal_places=2)
+    hours = models.BigIntegerField(default=0)
     for_everyone = models.BooleanField(default=True)
     description = models.TextField(blank=True)
     num_reviews = models.PositiveIntegerField(default=0)
