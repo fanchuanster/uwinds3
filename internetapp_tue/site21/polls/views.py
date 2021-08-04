@@ -26,7 +26,7 @@ def user_login(request):
         user = authenticate(username=username, password=password)
         if user:
             if user.is_active:
-                request.session.set_expiry(60)
+                request.session.set_expiry(600)
                 login(request, user)
                 request.session['last_login'] = datetime.now()
                 return HttpResponseRedirect(reverse('polls:index'))

@@ -4,19 +4,26 @@
 
     {% if isstudent %}
         <div>
-        {{ user.first_name }}, {{ user.last_name }}
+        <strong>Student Name: </strong>{{ user.first_name }}, {{ user.last_name }}
         <br>
         <br>
-            <div><strong>Interested courses</strong></div>
+            <div><strong>Interested Topics: </strong></div>
+        <ul>
         {% for topic in user.interested_in.all %}
-            {{ topic.name }}
+            <li>
+                {{ topic.name }}
+            </li>
         {% endfor %}
+        </ul>
         <br>
-        <br>
-        <div><strong>Registered courses</strong></div>
+        <div><strong>Registered Courses:</strong></div>
+        <ul>
         {% for course in user.registered_courses.all %}
-            {{ course.title }}
+            <li>
+                {{ course.title }}
+            </li>
         {% endfor %}
+        </ul>
         </div>
     {% else %}
         <div><p>You are not a registered student!</p></div>

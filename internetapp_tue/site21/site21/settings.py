@@ -132,3 +132,11 @@ LOGIN_URL = '/myapp/user_login'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
+
+
+#
+# EMAIL_USE_TLS = True
+# EMAIL_HOST = 'smtp.uwindsor.ca'
+# EMAIL_PORT = 587
+# EMAIL_HOST_USER = 'dong23@uwindsor.ca'
+# EMAIL_HOST_PASSWORD = 'Password'

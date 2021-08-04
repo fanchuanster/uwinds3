@@ -25,7 +25,7 @@ class OrderForm(forms.ModelForm):
         model = Order
         fields = ['courses', 'student', 'order_status']
         widgets = {'courses': forms.CheckboxSelectMultiple(), 'order_type': forms.RadioSelect}
-        labels = {'student': u'Student Name'}
+        labels = {'student': u'Student Name', 'courses': u'Available Courses'}
 
 
 class ReviewForm(forms.ModelForm):

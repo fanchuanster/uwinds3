@@ -43,9 +43,10 @@ div#footer,div#header {
   padding: 6px 16px;
   font-weight: bolder;
   font-size: large;
+  box-sizing: border-box;
 }
 
-ul li {
+div#footer ul li {
   float: left;
   margin: 8px 16px;
 }

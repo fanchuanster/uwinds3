@@ -37,13 +37,12 @@
             <a href="{% url 'polls:placeorder' %}">Place Order</a>
         </li>
 
-        <li>
-            {% if user.is_authenticated %}
-                <a href="{% url 'polls:user_logout' %}">Logout</a>
-            {% else %}
-                <a href="{% url 'polls:user_login' %}">Login</a>
-            {% endif %}
-        </li>
+        {% if user.is_authenticated %}
+            <li><a href="{% url 'polls:user_logout' %}">Logout</a></li>
+            <li><a href="{% url 'polls:myaccount' %}">MyAccount</a></li>
+        {% else %}
+            <li><a href="{% url 'polls:user_login' %}">Login</a></li>
+        {% endif %}
 
         <li>
             <a href="{% url 'polls:about1' %}">About</a>
