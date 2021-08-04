@@ -12,7 +12,7 @@ admin.site.register(Review)
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
     fields = ['courses', ('student', 'order_status', 'order_date')]
-    list_display = ['id', 'student', 'order_status', 'order_date', 'total_items']
+    list_display = ['id', 'student', 'order_status', 'order_date', 'total_items', 'total_cost']
 
 @admin.register(Course)
 class CourseAdmin(admin.ModelAdmin):
