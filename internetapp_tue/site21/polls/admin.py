@@ -37,4 +37,4 @@ class TopicAdmin(admin.ModelAdmin):
 @admin.register(Student)
 class StudentAdmin(admin.ModelAdmin):
     fields = ['level', 'address', 'province', 'registered_courses', 'interested_in']
-    list_display = ('username', 'level', 'address', 'province')
+    list_display = ('username', 'first_name', 'last_name', 'province', 'upper_case_name')

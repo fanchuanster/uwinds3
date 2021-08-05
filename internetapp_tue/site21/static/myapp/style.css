@@ -39,7 +39,7 @@ ul {
 
 div#footer,div#header {
   background-color: blue;
-  color: white;
+  color: yellow;
   padding: 6px 16px;
   font-weight: bolder;
   font-size: large;
@@ -53,7 +53,7 @@ div#footer ul li {
 
 li a {
   display: block;
-  /*color: white;*/
+  color: white;
   text-align: left;
   padding: 8px;
   text-decoration: none;

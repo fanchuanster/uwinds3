@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block myhdg %}Create an Account{% endblock %}
+{% block body_block %}
+    <form action="{% url 'polls:register' %}" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" name="submit" value="Register as Student" />
+    </form>
+{% endblock %}

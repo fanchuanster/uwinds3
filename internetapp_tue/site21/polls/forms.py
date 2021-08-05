@@ -1,6 +1,6 @@
 from django import forms
 from django.core.validators import MinValueValidator
-from polls.models import Order, Review
+from polls.models import Order, Review, Student
 from django.core.exceptions import ValidationError
 
 class LoginForm(forms.Form):
@@ -43,3 +43,22 @@ class ReviewForm(forms.ModelForm):
             raise ValidationError(
                 "You must enter a rating between 1 and 5!"
             )
+
+class StudentForm(forms.ModelForm):
+    class Meta:
+        model = Student
+        fields = ['username', 'password', 'first_name', 'last_name', 'address', 'province', 'interested_in', 'email']
+        labels = {
+            'username':u'User Name',
+            'password':u'Password',
+            'first_name':u'First Name',
+            'last_name':u'Last Name',
+            'address':u'Address',
+            'province':u'Province',
+            'interested_in':u'Interesting Topics',
+            'email':u'Email Address'
+        }
+        widgets = {
+            'interested_in':forms.CheckboxSelectMultiple,
+            'password': forms.PasswordInput
+        }

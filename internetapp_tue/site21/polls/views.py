@@ -2,9 +2,9 @@ from datetime import datetime
 
 from django.shortcuts import render, redirect, reverse
 from django.http import HttpResponse, HttpResponseRedirect
-from .forms import SearchForm, OrderForm, ReviewForm, LoginForm
+from .forms import SearchForm, OrderForm, ReviewForm, LoginForm, StudentForm
 from django.http import Http404
-from .models import Student, Topic, Course
+from .models import Student, Topic, Course, User
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -13,12 +13,9 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 def myaccount(request):
     student = Student.objects.get(username=request.user)
     return render(request, 'registration/myaccount.html', {
-        'isstudent': student,
         'user': student})
 
 def user_login(request):
-    if request.user.is_authenticated:
-        print('the user is authenticated')
     if request.method == 'POST':
         form = LoginForm(request.POST)
         username = request.POST.get('username', '')
@@ -26,11 +23,16 @@ def user_login(request):
         user = authenticate(username=username, password=password)
         if user:
             if user.is_active:
+                nextpage = request.POST.get("next")
                 request.session.set_expiry(600)
                 login(request, user)
                 request.session['last_login'] = datetime.now()
-                return HttpResponseRedirect(reverse('polls:index'))
-        form.errors = True
+                if nextpage:
+                    print("next", nextpage)
+                    return redirect(nextpage)
+                else:
+                    print("no next")
+                    return HttpResponseRedirect(reverse('polls:index'))
         return render(request, 'registration/login.html', {'form': form})
     else:
         return render(request, 'registration/login.html', {'form':LoginForm()})
@@ -133,3 +135,26 @@ def review_course(request):
     else:
         form = ReviewForm()
         return render(request, 'polls/reviewcourse.html', {'form':form})
+
+def register(request):
+    if request.method == 'POST':
+        form = StudentForm(request.POST)
+        if form.is_valid():
+            print(form.cleaned_data['username'], form.cleaned_data['password'])
+            student = Student.objects.create()
+            student.username = form.cleaned_data['username']
+            student.first_name = form.cleaned_data['first_name']
+            student.last_name = form.cleaned_data['last_name']
+            student.address = form.cleaned_data['address']
+            student.province = form.cleaned_data['province']
+            student.email = form.cleaned_data['email']
+            student.interested_in.set(form.cleaned_data['interested_in'])
+            student.set_password(form.cleaned_data['password'])
+            student.save()
+            return render(request, 'polls/general_response.html', {'msg':"Congratulations! Registration succeeded!"})
+        else:
+            print("form is not valid")
+            return render(request, 'polls/register.html', {'form': form})
+    else:
+        form = StudentForm()
+        return render(request, 'polls/register.html', {'form':form})

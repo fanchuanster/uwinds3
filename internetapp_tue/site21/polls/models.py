@@ -39,11 +39,18 @@ class Student(User):
 
     def __str__(self):
         return f"{super().__str__()}"
+    def upper_case_name(self):
+        """
+        Student Full Name
+        :return:
+        """
+        return self.first_name.upper() + " " + self.last_name.upper()
     level = models.CharField(choices=LVL_CHOICES, max_length=2, default='HS')
     address = models.CharField(max_length=300, blank=True)
     province=models.CharField(max_length=2, default='ON')
     registered_courses = models.ManyToManyField(Course, blank=True)
     interested_in = models.ManyToManyField(Topic)
+    # super().email
 
 class Order(models.Model):
     ORDER_STATUSES = [

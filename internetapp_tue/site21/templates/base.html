@@ -12,9 +12,9 @@
                 {% if user.is_authenticated %}
                     {{ user.username }}
                 {% else %}
-                    Anonymous User.
+                    Anonymous User
                 {% endif %}
-                {% endblock %}
+            {% endblock %}
         </h1>
     </div>
 
@@ -24,31 +24,26 @@
 
     <div id="footer">
         <ul>
-        {% if request.view != "index" %}
-        <li>
-            <a href = "{% url 'polls:index' %}">Home</a>
-        </li>
-        {% endif %}
+            <li>
+                <a href = "{% url 'polls:index' %}">Home</a>
+            </li>
 
-        <li>
-            <a href = "{% url 'polls:findcourses' %}">Search Courses</a>
-        </li>
-        <li>
-            <a href="{% url 'polls:placeorder' %}">Place Order</a>
-        </li>
+            {% if user.is_authenticated %}
+                <li><a href="{% url 'polls:user_logout' %}">Logout</a></li>
 
-        {% if user.is_authenticated %}
-            <li><a href="{% url 'polls:user_logout' %}">Logout</a></li>
-            <li><a href="{% url 'polls:myaccount' %}">MyAccount</a></li>
-        {% else %}
-            <li><a href="{% url 'polls:user_login' %}">Login</a></li>
-        {% endif %}
+{#                {% if user.province %}#}
+                    <li><a href = "{% url 'polls:findcourses' %}">Search Courses</a></li>
+                    <li><a href="{% url 'polls:placeorder' %}">Place Order</a></li>
+                    <li><a href="{% url 'polls:myaccount' %}">MyAccount</a></li>
+{#                {% endif %}#}
+            {% else %}
+                <li><a href="{% url 'polls:user_login' %}">Login</a></li>
+                <li><a href="{% url 'polls:register' %}">Register</a></li>
+            {% endif %}
 
-        <li>
-            <a href="{% url 'polls:about1' %}">About</a>
-        </li>
+            <li><a href="{% url 'polls:about1' %}">About</a></li>
 
-    </ul>
+        </ul>
     </div>
 </body>
 </html>
