@@ -32,7 +32,7 @@ def user_login(request):
                     return redirect(nextpage)
                 else:
                     print("no next")
-                    return HttpResponseRedirect(reverse('polls:index'))
+                    return HttpResponse("xx")
         return render(request, 'registration/login.html', {'form': form})
     else:
         return render(request, 'registration/login.html', {'form':LoginForm()})
