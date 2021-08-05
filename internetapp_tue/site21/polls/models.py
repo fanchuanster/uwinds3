@@ -14,7 +14,7 @@ class Topic(models.Model):
 
 class Course(models.Model):
     def __str__(self):
-        return f"{self.title}"
+        return f"{self.title} - ${self.price}"
     def get_hours(self):
         return self.topic.length if self.hours == 0 else self.hours
     def add_hours(self, increment):

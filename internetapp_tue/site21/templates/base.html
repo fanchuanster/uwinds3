@@ -34,13 +34,12 @@
 {#                {% if user.province %}#}
                     <li><a href = "{% url 'polls:findcourses' %}">Search Courses</a></li>
                     <li><a href="{% url 'polls:placeorder' %}">Place Order</a></li>
-                    <li><a href="{% url 'polls:myaccount' %}">MyAccount</a></li>
 {#                {% endif %}#}
             {% else %}
                 <li><a href="{% url 'polls:user_login' %}">Login</a></li>
                 <li><a href="{% url 'polls:register' %}">Register</a></li>
             {% endif %}
-
+            <li><a href="{% url 'polls:myaccount' %}">MyAccount</a></li>
             <li><a href="{% url 'polls:about1' %}">About</a></li>
 
         </ul>
