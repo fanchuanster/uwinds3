@@ -8,11 +8,12 @@ from .models import Student, Topic, Course, User
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
+from django.conf import settings
 
 @login_required
 def myaccount(request):
     student = Student.objects.filter(username=request.user).first()
-    return render(request, 'registration/myaccount.html', { 'student': student })
+    return render(request, 'registration/myaccount.html', { 'student': student, 'media_url':settings.MEDIA_URL })
 
 def user_login(request):
     if request.method == 'POST':
@@ -90,15 +91,6 @@ def detail(request, topic_id):
                       'number_of_courses':len(courses),
                       'courses':courses})
 
-def student_details(request, student_id):
-    try:
-        student = Student.objects.get(id=student_id)
-    except Student.DoesNotExist:
-        raise Http404('student not found')
-    return render(request, 'student_detail.html', {
-        'student': student
-    })
-
 @login_required
 def place_order(request):
     if request.method == 'POST':
@@ -158,3 +150,6 @@ def register(request):
     else:
         form = StudentForm()
         return render(request, 'polls/register.html', {'form':form})
+
+def edit_myaccount(request):
+    pass

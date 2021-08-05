@@ -18,11 +18,12 @@ from django.urls import path
 from polls import views
 from django.contrib.auth import views as auth_views
 
+from django.conf import settings
+from django.conf.urls.static import static
+
 app_name="polls"
 urlpatterns = [
     path(r'', views.index, name='index'),
-    # the path should not prefixed with /
-    # path('student/<int:student_id>/', views.student_details, name='student_details')
     path('about/', views.about, name='about1'),
     path('<int:topic_id>/', views.detail, name='detail'),
     path('findcourses', views.findcourses, name='findcourses'),
@@ -34,4 +35,4 @@ urlpatterns = [
     path('user_logout', views.user_logout, name='user_logout'),
     path('myaccount/', views.myaccount, name='myaccount'),
     path('register/', views.register, name='register'),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

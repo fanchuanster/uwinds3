@@ -3,6 +3,7 @@ from django.contrib import admin
 # Register your models here.
 from django.contrib import admin
 from .models import Topic, Course, Student, Order, Review
+from .forms import CourseForm
 # admin.site.register(Topic)
 # admin.site.register(Student)
 
@@ -18,7 +19,8 @@ def add_50_to_hours(courseadmin, request, queryset):
 
 @admin.register(Course)
 class CourseAdmin(admin.ModelAdmin):
-    fields = [('title', 'topic'), ('price', 'num_reviews')]
+    form = CourseForm
+    # fields = [('title', 'topic'), ('price', 'num_reviews')]
     list_display = ('title', 'topic', 'price', 'chours', 'for_everyone')
     actions = [add_50_to_hours]
     def chours(self, obj):
@@ -36,5 +38,5 @@ class TopicAdmin(admin.ModelAdmin):
 
 @admin.register(Student)
 class StudentAdmin(admin.ModelAdmin):
-    fields = ['level', 'address', 'province', 'registered_courses', 'interested_in', 'email']
+    fields = ['photo','level', 'address', 'province', 'registered_courses', 'interested_in', 'email']
     list_display = ('username', 'first_name', 'last_name', 'province', 'upper_case_name', 'email')

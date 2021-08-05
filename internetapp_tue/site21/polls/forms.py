@@ -1,6 +1,6 @@
 from django import forms
 from django.core.validators import MinValueValidator
-from polls.models import Order, Review, Student
+from polls.models import Order, Review, Student, Course
 from django.core.exceptions import ValidationError
 
 class LoginForm(forms.Form):
@@ -18,7 +18,6 @@ class SearchForm(forms.Form):
     name = forms.CharField(max_length=10, required=False, label='Student Name:')
     length = forms.TypedChoiceField(widget=forms.RadioSelect, choices=LENGTH_CHOICES, coerce=int, required=False, label='Preferred course duration:')
     max_price = forms.IntegerField(label='Maximum Price', validators=[MinValueValidator(0, message='value too small')])
-
 
 class OrderForm(forms.ModelForm):
     class Meta:
@@ -38,7 +37,6 @@ class ReviewForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         rating = cleaned_data.get("rating")
-
         if rating < 1 or rating > 5:
             raise ValidationError(
                 "You must enter a rating between 1 and 5!"
@@ -47,7 +45,7 @@ class ReviewForm(forms.ModelForm):
 class StudentForm(forms.ModelForm):
     class Meta:
         model = Student
-        fields = ['username', 'password', 'first_name', 'last_name', 'address', 'province', 'interested_in', 'email']
+        fields = ['photo','username', 'password', 'first_name', 'last_name', 'address', 'province', 'interested_in', 'email']
         labels = {
             'username':u'User Name',
             'password':u'Password',
@@ -62,3 +60,20 @@ class StudentForm(forms.ModelForm):
             'interested_in':forms.CheckboxSelectMultiple,
             'password': forms.PasswordInput
         }
+
+class CourseForm(forms.ModelForm):
+    class Meta:
+        model = Course
+        fields = '__all__'
+    def clean(self):
+        cleaned_data = super().clean()
+        price = cleaned_data.get("price")
+        if price < 100 or price > 200:
+            raise ValidationError(
+                "You must enter a price between 100 and 200!"
+            )
+        hours = cleaned_data.get("hours")
+        if hours < 10 or hours > 300:
+            raise ValidationError(
+                "You must enter an hours value between 30 and 300!"
+            )
