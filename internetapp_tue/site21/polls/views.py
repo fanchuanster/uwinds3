@@ -65,8 +65,8 @@ def index(request):
     top_list = Topic.objects.all().order_by('id')[:10]
     last_login = request.session.get('last_login')
     if not last_login:
-        last_login = 'Your las login was more than a minute ago'
-    setattr(request, 'view', 'index')
+        last_login = 'Your last login was more than a minute ago'
+    # setattr(request, 'view', 'index')
     return render(request, 'polls/index.html', {'top_list': top_list, 'last_login': "Your las login:" + str(last_login)})
 
 def about(request):
@@ -99,6 +99,7 @@ def student_details(request, student_id):
         'student': student
     })
 
+@login_required
 def place_order(request):
     if request.method == 'POST':
         form = OrderForm(request.POST)

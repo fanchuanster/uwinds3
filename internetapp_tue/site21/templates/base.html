@@ -10,7 +10,7 @@
         <h1>
             {% block myhdg %}Hello
                 {% if user.is_authenticated %}
-                    {{ user.username }}
+                    {{ user.first_name }} {{ user.last_name }}
                 {% else %}
                     Anonymous User
                 {% endif %}
@@ -30,16 +30,14 @@
 
             {% if user.is_authenticated %}
                 <li><a href="{% url 'polls:user_logout' %}">Logout</a></li>
-
-{#                {% if user.province %}#}
-                    <li><a href = "{% url 'polls:findcourses' %}">Search Courses</a></li>
-                    <li><a href="{% url 'polls:placeorder' %}">Place Order</a></li>
-{#                {% endif %}#}
+                <li><a href="{% url 'polls:myaccount' %}">MyAccount</a></li>
             {% else %}
                 <li><a href="{% url 'polls:user_login' %}">Login</a></li>
                 <li><a href="{% url 'polls:register' %}">Register</a></li>
             {% endif %}
-            <li><a href="{% url 'polls:myaccount' %}">MyAccount</a></li>
+
+            <li><a href = "{% url 'polls:findcourses' %}">Search Courses</a></li>
+            <li><a href="{% url 'polls:placeorder' %}">Place Order</a></li>
             <li><a href="{% url 'polls:about1' %}">About</a></li>
 
         </ul>

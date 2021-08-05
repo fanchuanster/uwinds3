@@ -124,8 +124,8 @@ STATICFILES_DIRS = [
     BASE_DIR / "static"
 ]
 
-LOGIN_URL = '/myapp/login'
-# LOGIN_REDIRECT_URL = '/myapp/myaccount'
+LOGIN_URL = '/myapp/user_login'
+LOGIN_REDIRECT_URL = '/myapp/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
@@ -135,8 +135,8 @@ SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 
 
 #
-# EMAIL_USE_TLS = True
-# EMAIL_HOST = 'smtp.uwindsor.ca'
-# EMAIL_PORT = 587
-# EMAIL_HOST_USER = 'dong23@uwindsor.ca'
-# EMAIL_HOST_PASSWORD = 'Password'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'fanchuanster@gmail.com'
+EMAIL_HOST_PASSWORD = 'zbsbdsjbybkploym'
