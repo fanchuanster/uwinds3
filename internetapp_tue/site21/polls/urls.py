@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from polls import views
+from django.contrib.auth import views as auth_views
 
 app_name="polls"
 urlpatterns = [
@@ -28,6 +29,8 @@ urlpatterns = [
     path('place_order', views.place_order, name='placeorder'),
     path('review', views.review_course, name='reviewcourse'),
     path('user_login', views.user_login, name='user_login'),
+    # url('login/','django.contrib.auth.views.login', {'template_name': 'registration/login.html'}),
+    path('login/', auth_views.LoginView.as_view()),
     path('user_logout', views.user_logout, name='user_logout'),
     path('myaccount/', views.myaccount, name='myaccount'),
     path('register/', views.register, name='register'),

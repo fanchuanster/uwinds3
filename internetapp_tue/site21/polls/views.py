@@ -11,9 +11,8 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 
 @login_required
 def myaccount(request):
-    student = Student.objects.get(username=request.user)
-    return render(request, 'registration/myaccount.html', {
-        'user': student})
+    student = Student.objects.filter(username=request.user).first()
+    return render(request, 'registration/myaccount.html', { 'student': student })
 
 def user_login(request):
     if request.method == 'POST':
