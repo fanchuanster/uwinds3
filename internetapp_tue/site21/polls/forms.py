@@ -45,10 +45,10 @@ class ReviewForm(forms.ModelForm):
 class StudentForm(forms.ModelForm):
     class Meta:
         model = Student
-        fields = ['photo','username', 'password', 'first_name', 'last_name', 'address', 'province', 'interested_in', 'email']
+        exclude = ['password', 'last_login', 'is_superuser', 'groups', 'user_permissions', 'is_staff', 'date_joined', 'is_active']
         labels = {
             'username':u'User Name',
-            'password':u'Password',
+            # 'password':u'Password',
             'first_name':u'First Name',
             'last_name':u'Last Name',
             'address':u'Address',
@@ -60,6 +60,11 @@ class StudentForm(forms.ModelForm):
             'interested_in':forms.CheckboxSelectMultiple,
             'password': forms.PasswordInput
         }
+        def get_photo_url(self):
+            instance = getattr(self, 'instance', None)
+            if not instance:
+                return ""
+            return instance.phot.url
 
 class CourseForm(forms.ModelForm):
     class Meta:

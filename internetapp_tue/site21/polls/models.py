@@ -50,7 +50,7 @@ class Student(User):
         # file will be uploaded to MEDIA_ROOT / user_<id>/<filename>
         return 'user_{0}/{1}'.format(self.username, filename)
 
-    photo = models.ImageField(upload_to=user_directory_path, blank=True)
+    photo = models.ImageField(upload_to=user_directory_path, help_text="Upload image: ", blank=True)
     level = models.CharField(choices=LVL_CHOICES, max_length=2, default='HS')
     address = models.CharField(max_length=300, blank=True)
     province=models.CharField(max_length=2, default='ON')

@@ -31,6 +31,7 @@
             {% if user.is_authenticated %}
                 <li><a href="{% url 'polls:user_logout' %}">Logout</a></li>
                 <li><a href="{% url 'polls:myaccount' %}">MyAccount</a></li>
+                <li><a href="{% url 'polls:edit_myaccount' %}">Edit MyAccount</a></li>
             {% else %}
                 <li><a href="{% url 'polls:user_login' %}">Login</a></li>
                 <li><a href="{% url 'polls:register' %}">Register</a></li>

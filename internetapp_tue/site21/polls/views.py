@@ -13,7 +13,7 @@ from django.conf import settings
 @login_required
 def myaccount(request):
     student = Student.objects.filter(username=request.user).first()
-    return render(request, 'registration/myaccount.html', { 'student': student, 'media_url':settings.MEDIA_URL })
+    return render(request, 'registration/myaccount.html', { 'student': student })
 
 def user_login(request):
     if request.method == 'POST':
@@ -120,8 +120,7 @@ def review_course(request):
             course = form.cleaned_data['course']
             course.num_reviews += 1
             course.save()
-            response = redirect('/myapp')
-            return response
+            return redirect('/myapp')
         else:
             return render(request, 'polls/reviewcourse.html', {'form': form})
     else:
@@ -132,7 +131,6 @@ def register(request):
     if request.method == 'POST':
         form = StudentForm(request.POST)
         if form.is_valid():
-            print(form.cleaned_data['username'], form.cleaned_data['password'])
             student = Student.objects.create()
             student.username = form.cleaned_data['username']
             student.first_name = form.cleaned_data['first_name']
@@ -146,10 +144,31 @@ def register(request):
             return render(request, 'polls/general_response.html', {'msg':"Congratulations! Registration succeeded!"})
         else:
             print("form is not valid")
-            return render(request, 'polls/register.html', {'form': form})
+            return render(request, 'polls/register.html', {'form': form, 'action_url':'/yapp/register/', 'actionname' : 'Register Student'})
     else:
         form = StudentForm()
-        return render(request, 'polls/register.html', {'form':form})
+        return render(request, 'polls/register.html', {'form':form, 'action_url':'myapp/register/', 'actionname' : 'Register Student'})
 
+@login_required
 def edit_myaccount(request):
-    pass
+    student = Student.objects.get(username=request.user)
+    if request.method == 'POST':
+        form = StudentForm(request.POST or None, request.FILES or None, instance=student)
+        if form.is_valid():
+            # form.save()    # can simply save like this if no password field.
+            student = form.save(commit=False)
+            # password change forces a logout.
+            # student.set_password(form.cleaned_data['password'])
+            student.save()
+            return redirect('/myapp/myaccount/')
+        else:
+            print('render in else')
+            return render(request, 'polls/register.html', {
+                                                            'form': form,
+                                                            'action_url':'myapp/edit_myaccount/',
+                                                            'actionname':'Save',
+                                                            'photo_url' : student.photo.url if student.photo else ""
+                                                            })
+    else:
+        form = StudentForm(instance=student)
+        return render(request, 'polls/register.html', {'form':form, 'action_url':'myapp/edit_myaccount/', 'actionname':'Save', 'photo_url' : student.photo.url if student.photo else ""})

@@ -7,7 +7,9 @@
 
         </div>
         <div>
-            <img src="{{ student.photo.url }}" width="140" height="140"/>
+        {% if student.photo %}
+            Photo <img src="{{ student.photo.url }}" width="140" height="140"/>
+        {%  endif %}
         </div>
         <div>
         <strong>Student Name: </strong>{{ user.first_name }}, {{ user.last_name }}

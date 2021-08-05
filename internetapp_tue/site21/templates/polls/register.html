@@ -1,9 +1,13 @@
 {% extends 'base.html' %}
 {% block myhdg %}Create an Account{% endblock %}
 {% block body_block %}
-    <form action="{% url 'polls:register' %}" method="post">
+    # Display image
+    {% if photo_url %}
+    <div><img src="{{ photo_url }}" alt="img" width="140" height="140"></div>
+    {% endif %}
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
-        <input type="submit" name="submit" value="Register as Student" />
+        <input type="submit" name="submit" value="{{ actionname }}" />
     </form>
 {% endblock %}

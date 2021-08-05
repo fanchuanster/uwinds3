@@ -132,6 +132,8 @@ LOGIN_REDIRECT_URL = '/myapp/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
+# AUTH_USER_MODEL = "polls.Student"
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 
