@@ -133,10 +133,11 @@ LOGIN_REDIRECT_URL = '/myapp/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 
+# SMTP for Reset password
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_PORT = config('EMAIL_PORT', cast=int)
 EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
-# SMTP for Reset password
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
+
