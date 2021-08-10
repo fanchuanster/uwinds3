@@ -157,11 +157,11 @@ def edit_myaccount(request):
     if request.method == 'POST':
         form = StudentForm(request.POST or None, request.FILES or None, instance=student)
         if form.is_valid():
-            # form.save()    # can simply save like this if no password field.
-            student = form.save(commit=False)
-            # password change forces a logout.
-            # student.set_password(form.cleaned_data['password'])
-            student.save()
+            form.save()    # can simply save like this if no password field.
+            # student = form.save(commit=False)
+            # # password change forces a logout.
+            # # student.set_password(form.cleaned_data['password'])
+            # student.save()
             return redirect('/myapp/myaccount/')
         else:
             print('render in else')

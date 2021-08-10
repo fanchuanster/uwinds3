@@ -16,7 +16,7 @@
         <br>
             <h2>Interested Topics:</h2>
         <ul>
-        {% for topic in user.interested_in.all %}
+        {% for topic in student.interested_in.all %}
             <li>
                 {{ topic.name }}
             </li>
@@ -25,7 +25,7 @@
         <br>
         <h2>Registered Courses:</h2>
         <ul>
-        {% for course in user.registered_courses.all %}
+        {% for course in student.registered_courses.all %}
             <li>
                 {{ course.title }}
             </li>
