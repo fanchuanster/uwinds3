@@ -8,7 +8,9 @@ from .models import Student, Topic, Course, User
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.conf import settings
+
+# dump database data using manage.py tool
+# dumpdata polls --natural-foreign --natural-primary -e contenttypes -e auth.Permission
 
 @login_required
 def myaccount(request):
@@ -50,7 +52,7 @@ def findcourses(request):
             length = form.cleaned_data['length']
             max_price = form.cleaned_data['max_price']
             if length:
-                topics = Topic.objects.filter(length=length)
+                topics = Topic.objects.filter(length__lte=length)
             else:
                 topics = Topic.objects.all()
             courselist = []

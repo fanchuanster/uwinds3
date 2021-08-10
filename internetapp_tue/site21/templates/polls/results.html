@@ -1,9 +1,17 @@
 {% extends 'base.html' %}
+{% block title %}
+    Search Result
+{% endblock %}
 {% block body_block %}
     <div>Hello {{ name }}</div>
     <ul>
-    {% for course in courselist %}
-        <li>{{ course }} - ${{ course.price }}</li>
-    {% endfor %}
+    <h3>Search results of courses:</h3>
+    {% if courselist %}
+        {% for course in courselist %}
+            <li>{{ course }} - ${{ course.price }}</li>
+        {% endfor %}
+    {% else %}
+        <div>No result was found</div>
+    {% endif %}
     </ul>
 {% endblock %}

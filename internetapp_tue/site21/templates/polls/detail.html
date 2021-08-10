@@ -1,15 +1,13 @@
 {% extends "base.html" %}
 {% block body_block %}
-    <body>
+    <div>
         <div>
-            <br>
-            <label><strong>Topic Name: {{ name }}</strong></label>
-            <br>
-            <label>Length: {{ length }} hours</label>
+            <h3>Topic Name: {{ name }}</h3>
+            <h4>Length: {{ length }} hours</h4>
         </div>
         <br/>
         <div>
-            <label><strong>Course list</strong></label>
+            <h3>Course list:</h3>
             <ol>
                 {% for course in courses %}
                 <li>
@@ -18,5 +16,5 @@
                 {% endfor %}
             </ol>
         </div>
-    </body>
+    </div>
 {% endblock %}

@@ -20,7 +20,6 @@ def add_50_to_hours(courseadmin, request, queryset):
 @admin.register(Course)
 class CourseAdmin(admin.ModelAdmin):
     form = CourseForm
-    # fields = [('title', 'topic'), ('price', 'num_reviews')]
     list_display = ('title', 'topic', 'price', 'chours', 'for_everyone')
     actions = [add_50_to_hours]
     def chours(self, obj):

@@ -1,21 +1,20 @@
 {% extends 'base.html' %}
-
+{% block title %}
+    My Account
+{% endblock %}
 {% block body_block %}
 
     {% if student %}
         <div>
-
-        </div>
-        <div>
         {% if student.photo %}
-            Photo <img src="{{ student.photo.url }}" width="140" height="140"/>
+            <h3>Your Photo: </h3>
+            <img src="{{ student.photo.url }}" width="140" height="140"/>
         {%  endif %}
         </div>
         <div>
-        <strong>Student Name: </strong>{{ user.first_name }}, {{ user.last_name }}
+        <h3>Student Name: {{ user.first_name }}, {{ user.last_name }}</h3>
         <br>
-        <br>
-            <div><strong>Interested Topics: </strong></div>
+            <h2>Interested Topics:</h2>
         <ul>
         {% for topic in user.interested_in.all %}
             <li>
@@ -24,7 +23,7 @@
         {% endfor %}
         </ul>
         <br>
-        <div><strong>Registered Courses:</strong></div>
+        <h2>Registered Courses:</h2>
         <ul>
         {% for course in user.registered_courses.all %}
             <li>

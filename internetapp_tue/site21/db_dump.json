@@ -1,0 +1,656 @@
+[
+  {
+    "model": "polls.topic",
+    "pk": 1,
+    "fields": {
+      "name": "IT Certification",
+      "length": 14
+    }
+  },
+  {
+    "model": "polls.topic",
+    "pk": 2,
+    "fields": {
+      "name": "Economics",
+      "length": 12
+    }
+  },
+  {
+    "model": "polls.topic",
+    "pk": 3,
+    "fields": {
+      "name": "Web Development",
+      "length": 10
+    }
+  },
+  {
+    "model": "polls.topic",
+    "pk": 5,
+    "fields": {
+      "name": "Management",
+      "length": 12
+    }
+  },
+  {
+    "model": "polls.course",
+    "pk": 1,
+    "fields": {
+      "title": "CCNA",
+      "topic": 1,
+      "price": "199.99",
+      "hours": 0,
+      "for_everyone": false,
+      "description": "",
+      "num_reviews": 9
+    }
+  },
+  {
+    "model": "polls.course",
+    "pk": 2,
+    "fields": {
+      "title": "AWS",
+      "topic": 1,
+      "price": "119.99",
+      "hours": 0,
+      "for_everyone": true,
+      "description": "",
+      "num_reviews": 6
+    }
+  },
+  {
+    "model": "polls.course",
+    "pk": 3,
+    "fields": {
+      "title": "CompTIA Security",
+      "topic": 1,
+      "price": "139.99",
+      "hours": 0,
+      "for_everyone": false,
+      "description": "",
+      "num_reviews": 0
+    }
+  },
+  {
+    "model": "polls.course",
+    "pk": 4,
+    "fields": {
+      "title": "Oracle SQL",
+      "topic": 1,
+      "price": "159.99",
+      "hours": 0,
+      "for_everyone": false,
+      "description": "",
+      "num_reviews": 0
+    }
+  },
+  {
+    "model": "polls.course",
+    "pk": 5,
+    "fields": {
+      "title": "Microeconomics",
+      "topic": 2,
+      "price": "199.99",
+      "hours": 0,
+      "for_everyone": false,
+      "description": "",
+      "num_reviews": 0
+    }
+  },
+  {
+    "model": "polls.course",
+    "pk": 6,
+    "fields": {
+      "title": "Introduction to Economics",
+      "topic": 2,
+      "price": "174.99",
+      "hours": 0,
+      "for_everyone": true,
+      "description": "",
+      "num_reviews": 0
+    }
+  },
+  {
+    "model": "polls.course",
+    "pk": 7,
+    "fields": {
+      "title": "Global Economics",
+      "topic": 2,
+      "price": "149.99",
+      "hours": 0,
+      "for_everyone": true,
+      "description": "",
+      "num_reviews": 0
+    }
+  },
+  {
+    "model": "polls.course",
+    "pk": 8,
+    "fields": {
+      "title": "Web Dev Bootcamp",
+      "topic": 3,
+      "price": "199.99",
+      "hours": 0,
+      "for_everyone": true,
+      "description": "",
+      "num_reviews": 0
+    }
+  },
+  {
+    "model": "polls.course",
+    "pk": 9,
+    "fields": {
+      "title": "Web Design",
+      "topic": 3,
+      "price": "159.99",
+      "hours": 0,
+      "for_everyone": false,
+      "description": "",
+      "num_reviews": 0
+    }
+  },
+  {
+    "model": "polls.course",
+    "pk": 10,
+    "fields": {
+      "title": "Web Development Mastercalss",
+      "topic": 3,
+      "price": "124.99",
+      "hours": 0,
+      "for_everyone": true,
+      "description": "",
+      "num_reviews": 0
+    }
+  },
+  {
+    "model": "polls.course",
+    "pk": 11,
+    "fields": {
+      "title": "Build Responsive Websites",
+      "topic": 3,
+      "price": "149.99",
+      "hours": 0,
+      "for_everyone": false,
+      "description": "",
+      "num_reviews": 0
+    }
+  },
+  {
+    "model": "polls.course",
+    "pk": 12,
+    "fields": {
+      "title": "Innovation for Business",
+      "topic": 5,
+      "price": "174.99",
+      "hours": 0,
+      "for_everyone": true,
+      "description": "",
+      "num_reviews": 0
+    }
+  },
+  {
+    "model": "polls.course",
+    "pk": 13,
+    "fields": {
+      "title": "Leadership Skills",
+      "topic": 5,
+      "price": "184.99",
+      "hours": 0,
+      "for_everyone": true,
+      "description": "",
+      "num_reviews": 0
+    }
+  },
+  {
+    "model": "polls.course",
+    "pk": 14,
+    "fields": {
+      "title": "Project Management",
+      "topic": 5,
+      "price": "150.00",
+      "hours": 62,
+      "for_everyone": true,
+      "description": "",
+      "num_reviews": 0
+    }
+  },
+  {
+    "model": "polls.student",
+    "fields": {
+      "user_ptr": [
+        "john"
+      ],
+      "photo": "",
+      "level": "HS",
+      "address": "123 University Avenue",
+      "province": "ON",
+      "registered_courses": [
+        3,
+        4,
+        8
+      ],
+      "interested_in": [
+        1,
+        2,
+        3
+      ]
+    }
+  },
+  {
+    "model": "polls.student",
+    "fields": {
+      "user_ptr": [
+        "mary"
+      ],
+      "photo": "",
+      "level": "UG",
+      "address": "235 Sunset Avenue",
+      "province": "BC",
+      "registered_courses": [
+        1
+      ],
+      "interested_in": [
+        2,
+        5
+      ]
+    }
+  },
+  {
+    "model": "polls.student",
+    "fields": {
+      "user_ptr": [
+        "alan"
+      ],
+      "photo": "",
+      "level": "ND",
+      "address": "306 Prince Street",
+      "province": "AB",
+      "registered_courses": [
+        2
+      ],
+      "interested_in": [
+        2,
+        3,
+        5
+      ]
+    }
+  },
+  {
+    "model": "polls.student",
+    "fields": {
+      "user_ptr": [
+        "josh"
+      ],
+      "photo": "",
+      "level": "PG",
+      "address": "442 Sunset Avenue",
+      "province": "QC",
+      "registered_courses": [
+        
+      ],
+      "interested_in": [
+        3,
+        5
+      ]
+    }
+  },
+  {
+    "model": "polls.student",
+    "fields": {
+      "user_ptr": [
+        "user3"
+      ],
+      "photo": "user_user3/windows.spotlight_i41A8di.jpg",
+      "level": "HS",
+      "address": "dd",
+      "province": "ON",
+      "registered_courses": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "interested_in": [
+        2
+      ]
+    }
+  },
+  {
+    "model": "polls.order",
+    "pk": 1,
+    "fields": {
+      "student": [
+        "john"
+      ],
+      "order_status": 1,
+      "order_date": "2021-06-05T18:05:18Z",
+      "courses": [
+        4,
+        8
+      ]
+    }
+  },
+  {
+    "model": "polls.order",
+    "pk": 2,
+    "fields": {
+      "student": [
+        "alan"
+      ],
+      "order_status": 1,
+      "order_date": "2021-06-05T18:10:17Z",
+      "courses": [
+        2
+      ]
+    }
+  },
+  {
+    "model": "polls.order",
+    "pk": 4,
+    "fields": {
+      "student": [
+        "john"
+      ],
+      "order_status": 2,
+      "order_date": "2021-07-20T00:14:02Z",
+      "courses": [
+        6
+      ]
+    }
+  },
+  {
+    "model": "polls.order",
+    "pk": 5,
+    "fields": {
+      "student": [
+        "josh"
+      ],
+      "order_status": 1,
+      "order_date": "2021-07-20T01:15:52Z",
+      "courses": [
+        1
+      ]
+    }
+  },
+  {
+    "model": "polls.order",
+    "pk": 6,
+    "fields": {
+      "student": [
+        "john"
+      ],
+      "order_status": 1,
+      "order_date": "2021-07-20T01:20:02.149Z",
+      "courses": [
+        3,
+        4
+      ]
+    }
+  },
+  {
+    "model": "polls.order",
+    "pk": 7,
+    "fields": {
+      "student": [
+        "mary"
+      ],
+      "order_status": 2,
+      "order_date": "2021-07-22T04:00:38.480Z",
+      "courses": [
+        1,
+        2
+      ]
+    }
+  },
+  {
+    "model": "polls.order",
+    "pk": 8,
+    "fields": {
+      "student": [
+        "mary"
+      ],
+      "order_status": 2,
+      "order_date": "2021-07-22T04:00:38.480Z",
+      "courses": [
+        1,
+        2
+      ]
+    }
+  },
+  {
+    "model": "polls.order",
+    "pk": 9,
+    "fields": {
+      "student": [
+        "user3"
+      ],
+      "order_status": 1,
+      "order_date": "2021-08-05T23:24:00.959Z",
+      "courses": [
+        1,
+        2
+      ]
+    }
+  },
+  {
+    "model": "polls.order",
+    "pk": 10,
+    "fields": {
+      "student": [
+        "user3"
+      ],
+      "order_status": 1,
+      "order_date": "2021-08-05T23:24:00.959Z",
+      "courses": [
+        1,
+        2
+      ]
+    }
+  },
+  {
+    "model": "polls.order",
+    "pk": 11,
+    "fields": {
+      "student": [
+        "user3"
+      ],
+      "order_status": 1,
+      "order_date": "2021-08-05T23:35:31.667Z",
+      "courses": [
+        3,
+        4
+      ]
+    }
+  },
+  {
+    "model": "polls.review",
+    "pk": 1,
+    "fields": {
+      "reviewer": "xx@yy.com",
+      "course": 1,
+      "rating": 4,
+      "comments": "very good",
+      "date": "2021-07-19",
+      "datetime": "2021-07-20T02:22:33.947Z"
+    }
+  },
+  {
+    "model": "polls.review",
+    "pk": 2,
+    "fields": {
+      "reviewer": "xx@yy.com",
+      "course": 1,
+      "rating": 4,
+      "comments": "very good",
+      "date": "2021-07-19",
+      "datetime": "2021-07-20T02:26:28.584Z"
+    }
+  },
+  {
+    "model": "polls.review",
+    "pk": 3,
+    "fields": {
+      "reviewer": "xx@yy.com",
+      "course": 1,
+      "rating": 4,
+      "comments": "very good",
+      "date": "2021-07-19",
+      "datetime": "2021-07-20T02:32:41.519Z"
+    }
+  },
+  {
+    "model": "polls.review",
+    "pk": 4,
+    "fields": {
+      "reviewer": "xx@yy.com",
+      "course": 1,
+      "rating": 4,
+      "comments": "very good",
+      "date": "2021-07-19",
+      "datetime": "2021-07-20T02:32:41.519Z"
+    }
+  },
+  {
+    "model": "polls.review",
+    "pk": 5,
+    "fields": {
+      "reviewer": "ok@mail.com",
+      "course": 2,
+      "rating": 2,
+      "comments": "ok",
+      "date": "2021-07-19",
+      "datetime": "2021-07-20T02:32:41.519Z"
+    }
+  },
+  {
+    "model": "polls.review",
+    "pk": 6,
+    "fields": {
+      "reviewer": "ok@mail.com",
+      "course": 2,
+      "rating": 2,
+      "comments": "ok",
+      "date": "2021-07-19",
+      "datetime": "2021-07-20T02:42:46.063Z"
+    }
+  },
+  {
+    "model": "polls.review",
+    "pk": 7,
+    "fields": {
+      "reviewer": "email@xx.com",
+      "course": 1,
+      "rating": 2,
+      "comments": "sx",
+      "date": "2021-07-19",
+      "datetime": "2021-07-20T02:42:46.063Z"
+    }
+  },
+  {
+    "model": "polls.review",
+    "pk": 8,
+    "fields": {
+      "reviewer": "xxxx@mail.com",
+      "course": 1,
+      "rating": 2,
+      "comments": "wwww",
+      "date": "2021-07-19",
+      "datetime": "2021-07-20T02:43:26.012Z"
+    }
+  },
+  {
+    "model": "polls.review",
+    "pk": 9,
+    "fields": {
+      "reviewer": "xxxx@mail.com",
+      "course": 1,
+      "rating": 1,
+      "comments": "wwwwrrrr",
+      "date": "2021-07-19",
+      "datetime": "2021-07-20T02:43:57.597Z"
+    }
+  },
+  {
+    "model": "polls.review",
+    "pk": 10,
+    "fields": {
+      "reviewer": "xxxx@mail.com",
+      "course": 2,
+      "rating": 1,
+      "comments": "wwwwrrrraws",
+      "date": "2021-07-19",
+      "datetime": "2021-07-20T02:44:40.828Z"
+    }
+  },
+  {
+    "model": "polls.review",
+    "pk": 11,
+    "fields": {
+      "reviewer": "ttt@nauk.com",
+      "course": 1,
+      "rating": 2,
+      "comments": "`````xxxx",
+      "date": "2021-07-19",
+      "datetime": "2021-07-20T02:45:02.937Z"
+    }
+  },
+  {
+    "model": "polls.review",
+    "pk": 12,
+    "fields": {
+      "reviewer": "ttt@nauk.com",
+      "course": 1,
+      "rating": 2,
+      "comments": "gggggggggggg",
+      "date": "2021-07-19",
+      "datetime": "2021-07-20T02:45:40.051Z"
+    }
+  },
+  {
+    "model": "polls.review",
+    "pk": 13,
+    "fields": {
+      "reviewer": "ttt@nauk.com",
+      "course": 1,
+      "rating": 2,
+      "comments": "gggggggggggg",
+      "date": "2021-07-19",
+      "datetime": "2021-07-20T02:46:11.835Z"
+    }
+  },
+  {
+    "model": "polls.review",
+    "pk": 14,
+    "fields": {
+      "reviewer": "tt@xx.com",
+      "course": 2,
+      "rating": 3,
+      "comments": "awsaws",
+      "date": "2021-07-19",
+      "datetime": "2021-07-20T02:47:57.119Z"
+    }
+  },
+  {
+    "model": "polls.review",
+    "pk": 15,
+    "fields": {
+      "reviewer": "dong@uw.com",
+      "course": 2,
+      "rating": 4,
+      "comments": "aws is good course.",
+      "date": "2021-07-21",
+      "datetime": "2021-07-22T04:00:38.481Z"
+    }
+  },
+  {
+    "model": "polls.review",
+    "pk": 16,
+    "fields": {
+      "reviewer": "someone@uw.com",
+      "course": 2,
+      "rating": 5,
+      "comments": "excellent - too",
+      "date": "2021-07-21",
+      "datetime": "2021-07-22T04:00:38.481Z"
+    }
+  }
+]

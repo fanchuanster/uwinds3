@@ -2,11 +2,13 @@
 {% load static %}
 <html>
 <head>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
 <link rel="stylesheet" type="text/css" href="{%  static 'myapp/style.css' %}" />
 <title>E-Learning WebApp - {% block title %}Welcome!{% endblock %}</title>
 </head>
 <body>
-    <div id="header">
+    <div class="jumbotron text-center">
         <h1>
             {% block myhdg %}Hello
                 {% if user.is_authenticated %}
@@ -18,30 +20,31 @@
         </h1>
     </div>
 
-    <div id="content">
+    <div class="container">
         {% block body_block %}*** {% endblock %}
     </div>
 
-    <div id="footer">
-        <ul>
-            <li>
-                <a href = "{% url 'polls:index' %}">Home</a>
-            </li>
-
+    <footer class="page-footer font-small blue pt-4">
+        <div class="row">
+        <div class="col-md-4">
+            <div class="col-md-4"><a href = "{% url 'polls:index' %}">Home</a></div>
+            <div class="col-md-4"><a href = "{% url 'polls:findcourses' %}">Search Courses</a></div>
+            <div class="col-md-4"><a href="{% url 'polls:placeorder' %}">Place Order</a></div>
+        </div>
+        <div class="col-md-4">
             {% if user.is_authenticated %}
-                <li><a href="{% url 'polls:user_logout' %}">Logout</a></li>
-                <li><a href="{% url 'polls:myaccount' %}">MyAccount</a></li>
-                <li><a href="{% url 'polls:edit_myaccount' %}">Edit MyAccount</a></li>
+                <div><a href="{% url 'polls:user_logout' %}">Logout</a></div>
+                <div><a href="{% url 'polls:myaccount' %}">MyAccount</a></div>
+                <div><a href="{% url 'polls:edit_myaccount' %}">Edit MyAccount</a></div>
             {% else %}
-                <li><a href="{% url 'polls:user_login' %}">Login</a></li>
-                <li><a href="{% url 'polls:register' %}">Register</a></li>
+                <div><a href="{% url 'polls:user_login' %}">Login</a></div>
+                <div><a href="{% url 'polls:register' %}">Register</a></div>
             {% endif %}
-
-            <li><a href = "{% url 'polls:findcourses' %}">Search Courses</a></li>
-            <li><a href="{% url 'polls:placeorder' %}">Place Order</a></li>
-            <li><a href="{% url 'polls:about1' %}">About</a></li>
-
-        </ul>
+        </div>
+        <div class="col-md-4">
+            <div><a href="{% url 'polls:about1' %}">About</a></div>
+        </div>
     </div>
+    </footer>
 </body>
 </html>

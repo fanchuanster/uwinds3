@@ -56,7 +56,6 @@ class Student(User):
     province=models.CharField(max_length=2, default='ON')
     registered_courses = models.ManyToManyField(Course, blank=True)
     interested_in = models.ManyToManyField(Topic)
-    # super().email
 
 class Order(models.Model):
     ORDER_STATUSES = [

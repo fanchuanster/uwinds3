@@ -20,6 +20,13 @@ class SearchForm(forms.Form):
     max_price = forms.IntegerField(label='Maximum Price', validators=[MinValueValidator(0, message='value too small')])
 
 class OrderForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(OrderForm, self).__init__(*args, **kwargs)
+        for field in iter(self.fields):
+            if field != "courses":
+                self.fields[field].widget.attrs.update({
+                    'class': 'form-control'
+                })
     class Meta:
         model = Order
         fields = ['courses', 'student', 'order_status']
