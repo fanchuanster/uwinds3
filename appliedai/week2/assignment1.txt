@@ -1,0 +1,10 @@
+
+Individual Assignment - Due September 25, 2021
+
+For this assignment, you are to write a 2-page report, in IEEE Manuscript format, 
+including no less than 5 references to provide a brief survey of important AI applications 
+prior to the year 2000. 
+Summarize each application, its significance, and limitations if any at the time.  
+
+
+
