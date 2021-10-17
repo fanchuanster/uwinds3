@@ -49,3 +49,4 @@ Preogram A -data*
 .settings
 bin
 .*
+*.log
