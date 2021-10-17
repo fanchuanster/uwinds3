@@ -14,32 +14,24 @@ public class Settings {
 		return RunEnvironment.getInstance().getParameters().getInteger("human_count");
 	}
 	static public int getIncubationTicks() {
-//		Integer i = RunEnvironment.getInstance().getParameters().getInteger("incubation_days");
-		Integer i = null;
-		if (i == null) {
-			i = 6;
-		}
+		Integer i = RunEnvironment.getInstance().getParameters().getInteger("incubation_days");
+		return 60 * 24 * i;
+	}
+	static public int getNotContagiousTicks() {
+		Integer i = RunEnvironment.getInstance().getParameters().getInteger("not_contagious_days");
 		return 60 * 24 * i;
 	}
 	static public int getMaskPercentage() {
 		Integer i = RunEnvironment.getInstance().getParameters().getInteger("mask_percentage");
-		if (i == null) {
-			i = 90;
-		}
 		return i;
 	}
 	static public int getDistancingSense() {
 		Integer i = RunEnvironment.getInstance().getParameters().getInteger("distancing_sense");
-		if (i == null) {
-			i = 1;
-		}
 		return i;
 	}
 	static public int getVaccinationRate() {
 		Integer i = RunEnvironment.getInstance().getParameters().getInteger("vaccination_percentage");
-		if (i == null) {
-			i = 90;
-		}
 		return i;
 	}
+	
 }

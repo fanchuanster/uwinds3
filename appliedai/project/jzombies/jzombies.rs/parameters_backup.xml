@@ -25,6 +25,16 @@
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
 											/>
+				<parameter name="vaccination_percentage" displayName="Vaccination Percentage" type="int" 
+						defaultValue="80" 
+						isReadOnly="false" 
+						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
+											/>
+				<parameter name="incubation_days" displayName="Incubation Days Average" type="int" 
+						defaultValue="6" 
+						isReadOnly="false" 
+						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
+											/>
 		</parameters>
 
 

@@ -26,15 +26,18 @@ import repast.simphony.context.Context;
  */
 public class Zombie extends Human {
 	private int incubationTicks;
+	private int notContagiousTicks;
 	
 	public Zombie(Human human) {
 		super(human);
 		incubationTicks = Settings.getIncubationTicks();
+		notContagiousTicks = Settings.getNotContagiousTicks();
 	}
 	
 	@ScheduledMethod(start = 1, interval = 1)
 	@Override
 	public void step() {
+		this.notContagiousTicks--;
 		if (this.incubationTicks-- <= 0) {
 			// once symptomatic, doing nothing.
 			return;
@@ -42,7 +45,9 @@ public class Zombie extends Human {
 		
 		super.step();
 		
-		infect();
+		if (this.notContagiousTicks < 0) {
+			infect();
+		}
 	}	
 
 	public void infect() {
@@ -67,18 +72,7 @@ public class Zombie extends Human {
 			boolean masked2 = human.getMasked();
 			NdPoint spacePt1 = space.getLocation(this);
 			NdPoint spacePt2 = space.getLocation(human);
-			
-			assert(human != null);
-			assert(this != null);
-			assert(spacePt1 != null);
-			assert(spacePt2 != null);
-			if (spacePt1 == null) {
-				System.out.println("null");
-			}
-			
-//			System.out.println(spacePt1.dimensionCount());
-//			System.out.println(spacePt2.dimensionCount());
-			
+						
 			double distance = space.getDistance(spacePt1, spacePt2);
 			double infectionRate = Infection.getInfectionRate(distance, masked1, masked2, human.getVaccination());
 			double randomRate = RandomHelper.nextDoubleFromTo(0, 1.0);
