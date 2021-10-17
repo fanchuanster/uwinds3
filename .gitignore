@@ -43,3 +43,9 @@ Dataset/*/
 untitled_project/
 
 settings.ini
+ModelOutput*
+Preogram A -data*
+.temp
+.settings
+bin
+.*
